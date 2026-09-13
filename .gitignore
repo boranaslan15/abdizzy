@@ -1,0 +1,6 @@
+# Extracted fonts/React from the bundle — regenerate with `node unpack.cjs`; not needed to rebuild
+unpacked/*
+!unpacked/template.html
+!unpacked/index.original.html
+node_modules/
+.vercel
