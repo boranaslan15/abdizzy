@@ -369,7 +369,12 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
   <div style="position:absolute;bottom:8px;right:8px;color:var(--gold);font-size:22px;line-height:1;transform:scale(-1);z-index:2">❧</div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;padding:34px 34px 0">
-    <div style="font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap">King's Cup</div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0">
+      <div style="font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap">King's Cup</div>
+      <sc-if value="{{ showDeckChip }}" hint-placeholder-val="{{ true }}">
+        <button sc-camel-on-click="{{ backToModes }}" title="{{ modesLabel }}" style="display:flex;align-items:center;gap:4px;background:transparent;border:1px solid rgba(var(--goldRgb),.4);border-radius:999px;padding:2px 8px;font:600 10px 'Spectral',serif;letter-spacing:.1em;text-transform:uppercase;color:rgba(var(--parchRgb),.75);cursor:pointer;white-space:nowrap;max-width:150px;overflow:hidden" style-hover="background:rgba(var(--goldRgb),.12);border-color:var(--gold)">↩ {{ modeGlyph }} {{ modeLabel }}</button>
+      </sc-if>
+    </div>
     <div style="display:flex;gap:8px;align-items:center">
       <button sc-camel-on-click="{{ openRules }}" title="{{ rulesBtnTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.4);background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;gap:2px;font:600 11px 'Spectral',serif;color:{{ rulesFg }}" style-hover="background:rgba(var(--goldRgb),.1)">
         <span style="font-size:14px;line-height:1">✦</span><span>{{ rulesCount }}</span>
@@ -649,6 +654,7 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
       </div>
       <button sc-camel-on-click="{{ playAgain }}" style="background:var(--gold);border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ againLabel }}</button>
       <button sc-camel-on-click="{{ backToSetup }}" style="margin-top:10px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">{{ newPlayersLabel }}</button>
+      <button sc-camel-on-click="{{ backToModes }}" style="margin-top:8px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">↩ {{ modesLabel }}</button>
     </div>
   </sc-if>
 
@@ -1173,6 +1179,8 @@ class Component extends DCLogic {
       isModes: screen === 'modes', isSetup: screen === 'setup', isGame: screen === 'game', isStats: screen === 'stats',
       themeClass: 'mode-' + mode,
       modeLabel: M.label[lang],
+      modeGlyph: M.glyph,
+      showDeckChip: screen !== 'modes',
       modeCards: Object.keys(D.modes).map(key => {
         const m = D.modes[key];
         return {
@@ -1193,7 +1201,7 @@ class Component extends DCLogic {
       }),
       modesTitle: t('Bir deste seç', 'Choose a deck'),
       modesSub: t('Her destenin kendi kuralları var', 'Every deck has its own rules'),
-      backToModes: () => { this.stopMusic(); this.setState({ screen: 'modes' }); },
+      backToModes: () => { this.stopMusic(); this.stopTimer(); this.setState({ screen: 'modes', timerLeft: 0 }); },
       modesLabel: t('Desteler', 'Decks'),
       setTr: () => this.setState({ lang: 'tr' }), setEn: () => this.setState({ lang: 'en' }),
       trBg: tr ? 'var(--gold)' : 'transparent', trFg: tr ? 'var(--ink)' : 'var(--gold)',
