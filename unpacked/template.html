@@ -334,98 +334,158 @@
 }
 </style>
 <style>
+/* one palette per game mode — the markup only ever references these variables */
+:root{--gold:#c9a227;--goldLite:#e4c65a;--goldRgb:201,162,39;--rose:#c05a6d;--roseRgb:138,43,58;
+--parch:#e8ddc4;--parchRgb:232,221,196;--ink:#241b10;--bg1:#332818;--bg2:#241b10;--bg3:#1a130a;
+--deck1:#1f170d;--deck2:#241b10;--face1:#2e2415;--face2:#241b10;--panel1:#241a10;--panel2:#1c1409;
+--back1:#4a2028;--back2:#33161c;--back3:#261014;--bar1:#8a2b3a;--veil:rgba(14,10,5,.82);
+--hot1:#7a1a28;--hot2:#4f0f1a;--hot3:#2e070e;--hotP1:#3d0c15;--hotP2:#26060c;--hotGold:#e4c65a;--body:#0e0a05}
+.mode-colleagues{--gold:#c9b273;--goldLite:#e3d29a;--goldRgb:201,178,115;--rose:#7fa88c;--roseRgb:70,120,95;
+--parch:#e6e3d3;--parchRgb:230,227,211;--ink:#101d17;--bg1:#22362b;--bg2:#16241c;--bg3:#0e1913;
+--deck1:#12211a;--deck2:#16241c;--face1:#1c2f25;--face2:#16241c;--panel1:#14251d;--panel2:#0f1c16;
+--back1:#1e4335;--back2:#153026;--back3:#0e211a;--bar1:#2f6b52;--veil:rgba(6,14,10,.85);--body:#07120d}
+.mode-passionfruit{--gold:#f0a6cf;--goldLite:#ffd0e8;--goldRgb:240,166,207;--rose:#f5c451;--roseRgb:150,60,110;
+--parch:#f7e7f1;--parchRgb:247,231,241;--ink:#2a0e28;--bg1:#4a1642;--bg2:#2f0d2b;--bg3:#1d061a;
+--deck1:#280a24;--deck2:#2f0d2b;--face1:#3d1136;--face2:#2b0b27;--panel1:#340f2f;--panel2:#230819;
+--back1:#6d1450;--back2:#4a0c37;--back3:#2d0722;--bar1:#8e2e6a;--veil:rgba(20,4,18,.85);
+--hot1:#8e1140;--hot2:#5c0a2a;--hot3:#33061a;--hotP1:#4a0a22;--hotP2:#2b0512;--hotGold:#ffd36e;--body:#12040f}
+.mode-pineapple{--gold:#f2c14e;--goldLite:#ffdc85;--goldRgb:242,193,78;--rose:#58c8b8;--roseRgb:40,140,130;
+--parch:#eaf3ef;--parchRgb:234,243,239;--ink:#08201f;--bg1:#14403f;--bg2:#0d2c2b;--bg3:#081d1e;
+--deck1:#0a2523;--deck2:#0d2c2b;--face1:#113533;--face2:#0c2726;--panel1:#0f2f2d;--panel2:#091f1e;
+--back1:#14534c;--back2:#0f3b37;--back3:#092825;--bar1:#1f7a6b;--veil:rgba(4,16,16,.85);
+--hot1:#a15a16;--hot2:#6b3a0d;--hot3:#3a2007;--hotP1:#5e3110;--hotP2:#331a06;--hotGold:#ffd98a;--body:#061717}
 body{margin:0;background:#0e0a05;font-family:'Spectral',serif}
-a{color:#c9a227}a:hover{color:#e4c65a}
-input::placeholder{color:rgba(232,221,196,.35)}
+a{color:var(--gold)}a:hover{color:var(--goldLite)}
+input::placeholder{color:rgba(var(--parchRgb),.35)}
 </style>
 </helmet>
 
-<div style="width:min(100vw,430px);margin:0 auto;min-height:100dvh;background:radial-gradient(ellipse 120% 80% at 50% 0%, #332818 0%, #241b10 45%, #1a130a 100%);display:flex;flex-direction:column;position:relative;box-sizing:border-box">
-  <div style="position:absolute;inset:14px;border:1px solid rgba(201,162,39,.55);border-radius:10px;pointer-events:none;z-index:2"></div>
-  <div style="position:absolute;inset:20px;border:1px solid rgba(201,162,39,.25);border-radius:6px;pointer-events:none;z-index:2"></div>
-  <div style="position:absolute;top:8px;left:8px;color:#c9a227;font-size:22px;line-height:1;z-index:2">❧</div>
-  <div style="position:absolute;top:8px;right:8px;color:#c9a227;font-size:22px;line-height:1;transform:scaleX(-1);z-index:2">❧</div>
-  <div style="position:absolute;bottom:8px;left:8px;color:#c9a227;font-size:22px;line-height:1;transform:scaleY(-1);z-index:2">❧</div>
-  <div style="position:absolute;bottom:8px;right:8px;color:#c9a227;font-size:22px;line-height:1;transform:scale(-1);z-index:2">❧</div>
+<div class="{{ themeClass }}" style="width:min(100vw,430px);margin:0 auto;min-height:100dvh;background:radial-gradient(ellipse 120% 80% at 50% 0%, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);display:flex;flex-direction:column;position:relative;box-sizing:border-box">
+  <div style="position:absolute;inset:14px;border:1px solid rgba(var(--goldRgb),.55);border-radius:10px;pointer-events:none;z-index:2"></div>
+  <div style="position:absolute;inset:20px;border:1px solid rgba(var(--goldRgb),.25);border-radius:6px;pointer-events:none;z-index:2"></div>
+  <div style="position:absolute;top:8px;left:8px;color:var(--gold);font-size:22px;line-height:1;z-index:2">❧</div>
+  <div style="position:absolute;top:8px;right:8px;color:var(--gold);font-size:22px;line-height:1;transform:scaleX(-1);z-index:2">❧</div>
+  <div style="position:absolute;bottom:8px;left:8px;color:var(--gold);font-size:22px;line-height:1;transform:scaleY(-1);z-index:2">❧</div>
+  <div style="position:absolute;bottom:8px;right:8px;color:var(--gold);font-size:22px;line-height:1;transform:scale(-1);z-index:2">❧</div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;padding:34px 34px 0">
-    <div style="font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:#c9a227;white-space:nowrap">King's Cup</div>
+    <div style="font-family:'Cinzel',serif;font-weight:600;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap">King's Cup</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <button sc-camel-on-click="{{ openPrompts }}" title="{{ phoneTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(201,162,39,.4);background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;color:{{ phoneFg }}" style-hover="background:rgba(201,162,39,.1)">
+      <button sc-camel-on-click="{{ openRules }}" title="{{ rulesBtnTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.4);background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;gap:2px;font:600 11px 'Spectral',serif;color:{{ rulesFg }}" style-hover="background:rgba(var(--goldRgb),.1)">
+        <span style="font-size:14px;line-height:1">✦</span><span>{{ rulesCount }}</span>
+      </button>
+      <button sc-camel-on-click="{{ openPrompts }}" title="{{ phoneTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.4);background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;color:{{ phoneFg }}" style-hover="background:rgba(var(--goldRgb),.1)">
         <svg sc-camel-view-box="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 7h8"></path><circle cx="9" cy="11.5" r="1"></circle><circle cx="12" cy="11.5" r="1"></circle><circle cx="15" cy="11.5" r="1"></circle><circle cx="9" cy="15" r="1"></circle><circle cx="12" cy="15" r="1"></circle><circle cx="15" cy="15" r="1"></circle><path d="M2.5 6.5v5"></path></svg>
       </button>
-      <button sc-camel-on-click="{{ toggleMusic }}" title="{{ musicTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(201,162,39,.4);background:transparent;cursor:pointer;font-size:15px;color:{{ musicFg }};text-decoration:{{ musicDeco }};display:flex;align-items:center;justify-content:center" style-hover="background:rgba(201,162,39,.1)">♬</button>
-      <button sc-camel-on-click="{{ toggleSfx }}" title="{{ sfxTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(201,162,39,.4);background:transparent;cursor:pointer;font-size:15px;color:{{ sfxFg }};text-decoration:{{ sfxDeco }};display:flex;align-items:center;justify-content:center" style-hover="background:rgba(201,162,39,.1)">♪</button>
-      <div style="display:flex;gap:2px;border:1px solid rgba(201,162,39,.4);border-radius:999px;padding:2px">
+      <button sc-camel-on-click="{{ toggleMusic }}" title="{{ musicTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.4);background:transparent;cursor:pointer;font-size:15px;color:{{ musicFg }};text-decoration:{{ musicDeco }};display:flex;align-items:center;justify-content:center" style-hover="background:rgba(var(--goldRgb),.1)">♬</button>
+      <button sc-camel-on-click="{{ toggleSfx }}" title="{{ sfxTitle }}" style="width:32px;height:32px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.4);background:transparent;cursor:pointer;font-size:15px;color:{{ sfxFg }};text-decoration:{{ sfxDeco }};display:flex;align-items:center;justify-content:center" style-hover="background:rgba(var(--goldRgb),.1)">♪</button>
+      <div style="display:flex;gap:2px;border:1px solid rgba(var(--goldRgb),.4);border-radius:999px;padding:2px">
         <button sc-camel-on-click="{{ setTr }}" style="font:600 11px 'Spectral',serif;padding:4px 10px;border-radius:999px;border:none;cursor:pointer;background:{{ trBg }};color:{{ trFg }}">TR</button>
         <button sc-camel-on-click="{{ setEn }}" style="font:600 11px 'Spectral',serif;padding:4px 10px;border-radius:999px;border:none;cursor:pointer;background:{{ enBg }};color:{{ enFg }}">EN</button>
       </div>
     </div>
   </div>
 
-  <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ true }}">
+  <sc-if value="{{ isModes }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;padding:10px 34px 44px">
+      <div style="display:flex;align-items:center;gap:10px;padding:16px 0 6px">
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(var(--goldRgb),.5))"></div>
+        <div style="color:var(--rose);font-size:14px">✦</div>
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(var(--goldRgb),.5),transparent)"></div>
+      </div>
+      <div style="text-align:center;font:italic 400 15px 'Spectral',serif;color:var(--parch)">{{ modesTitle }}</div>
+      <div style="text-align:center;font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.45);margin-top:2px">{{ modesSub }}</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
+        <sc-for list="{{ modeCards }}" as="m" hint-placeholder-count="4">
+          <button class="{{ m.cls }}" sc-camel-on-click="{{ m.onPick }}" style="display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:14px 16px;cursor:pointer" style-hover="border-color:var(--goldLite)">
+            <div style="width:42px;height:56px;flex:none;border-radius:6px;background:radial-gradient(circle at 50% 50%, var(--back1) 0%, var(--back2) 60%, var(--back3) 100%);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold)">{{ m.glyph }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)">{{ m.name }}</div>
+              <div style="font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:2px">{{ m.desc }}</div>
+              <div style="font:600 11px 'Spectral',serif;letter-spacing:.14em;color:var(--rose);margin-top:4px">{{ m.players }}</div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+      <div style="flex:1"></div>
+      <div style="text-align:center;font:12px 'Spectral',serif;color:rgba(var(--parchRgb),.4);margin-top:12px">♠→{{ suitNameA }} · ♥→{{ suitNameB }} · ♦→{{ suitNameC }} · ♣→{{ suitNameD }}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;display:flex;flex-direction:column;padding:10px 40px 44px">
       <div style="display:flex;align-items:center;gap:10px;padding:16px 0 6px">
-        <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(201,162,39,.5))"></div>
-        <div style="color:#c05a6d;font-size:14px">✦</div>
-        <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(201,162,39,.5),transparent)"></div>
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(var(--goldRgb),.5))"></div>
+        <div style="color:var(--rose);font-size:14px">✦</div>
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(var(--goldRgb),.5),transparent)"></div>
       </div>
-      <div style="text-align:center;font:italic 400 15px 'Spectral',serif;color:#e8ddc4">{{ setupTitle }}</div>
-      <div style="text-align:center;font:italic 13px 'Spectral',serif;color:rgba(232,221,196,.45);margin-top:2px">{{ setupSub }}</div>
+      <div style="text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">{{ modeLabel }}</div>
+      <div style="text-align:center;font:italic 400 15px 'Spectral',serif;color:var(--parch)">{{ setupTitle }}</div>
+      <div style="text-align:center;font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.45);margin-top:2px">{{ setupSub }}</div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px">
         <sc-for list="{{ setupPlayers }}" as="p" hint-placeholder-count="2">
           <div style="display:flex;gap:8px;align-items:center">
-            <div style="width:26px;text-align:center;font:600 14px 'Spectral',serif;color:rgba(201,162,39,.7)">{{ p.numeral }}</div>
-            <input value="{{ p.name }}" sc-camel-on-change="{{ p.onChange }}" placeholder="{{ p.placeholder }}" style="flex:1;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.35);border-radius:8px;padding:11px 14px;font:500 16px 'Spectral',serif;color:#e8ddc4;outline:none" style-focus="border-color:#c9a227;box-shadow:0 0 0 2px rgba(201,162,39,.2)">
-            <button sc-camel-on-click="{{ p.onRemove }}" style="width:34px;height:34px;border-radius:999px;border:1px solid rgba(138,43,58,.5);background:transparent;color:#c05a6d;font-size:15px;cursor:pointer;opacity:{{ p.removeOpacity }}">✕</button>
+            <div style="width:26px;text-align:center;font:600 14px 'Spectral',serif;color:rgba(var(--goldRgb),.7)">{{ p.numeral }}</div>
+            <input value="{{ p.name }}" sc-camel-on-change="{{ p.onChange }}" placeholder="{{ p.placeholder }}" style="flex:1;background:rgba(var(--goldRgb),.06);border:1px solid rgba(var(--goldRgb),.35);border-radius:8px;padding:11px 14px;font:500 16px 'Spectral',serif;color:var(--parch);outline:none" style-focus="border-color:var(--gold);box-shadow:0 0 0 2px rgba(var(--goldRgb),.2)">
+            <button sc-camel-on-click="{{ p.onRemove }}" style="width:34px;height:34px;border-radius:999px;border:1px solid rgba(var(--roseRgb),.5);background:transparent;color:var(--rose);font-size:15px;cursor:pointer;opacity:{{ p.removeOpacity }}">✕</button>
           </div>
         </sc-for>
       </div>
-      <button sc-camel-on-click="{{ addPlayer }}" style="margin-top:14px;background:transparent;border:1px dashed rgba(201,162,39,.4);border-radius:8px;padding:10px;font:600 14px 'Spectral',serif;color:#c9a227;cursor:pointer" style-hover="background:rgba(201,162,39,.08)">+ {{ addLabel }}</button>
+      <sc-if value="{{ canAddPlayer }}" hint-placeholder-val="{{ true }}">
+        <button sc-camel-on-click="{{ addPlayer }}" style="margin-top:14px;width:100%;background:transparent;border:1px dashed rgba(var(--goldRgb),.4);border-radius:8px;padding:10px;font:600 14px 'Spectral',serif;color:var(--gold);cursor:pointer" style-hover="background:rgba(var(--goldRgb),.08)">+ {{ addLabel }}</button>
+      </sc-if>
+      <sc-if value="{{ showSpice }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
+          <span style="font:600 10px 'Spectral',serif;letter-spacing:.2em;color:var(--rose)">{{ spiceLabel }}</span>
+          <sc-for list="{{ spiceOptions }}" as="s" hint-placeholder-count="3">
+            <button sc-camel-on-click="{{ s.onPick }}" style="font:600 12px 'Spectral',serif;padding:6px 14px;border-radius:999px;border:1px solid rgba(var(--goldRgb),.5);cursor:pointer;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
       <div style="flex:1"></div>
-      <button sc-camel-on-click="{{ startGame }}" style="background:#c9a227;border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:#241b10;cursor:pointer;opacity:{{ startOpacity }}" style-hover="background:#e4c65a">{{ startLabel }}</button>
-      <div style="text-align:center;font:12px 'Spectral',serif;color:rgba(232,221,196,.4);margin-top:12px">♠→{{ suitNameA }} · ♥→{{ suitNameB }} · ♦→{{ suitNameC }} · ♣→{{ suitNameD }}</div>
+      <button sc-camel-on-click="{{ startGame }}" style="background:var(--gold);border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:var(--ink);cursor:pointer;opacity:{{ startOpacity }}" style-hover="background:var(--goldLite)">{{ startLabel }}</button>
+      <button sc-camel-on-click="{{ backToModes }}" style="margin-top:10px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">↩ {{ modesLabel }}</button>
     </div>
   </sc-if>
 
   <sc-if value="{{ isGame }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;display:flex;flex-direction:column">
       <div style="text-align:center;padding:12px 34px 0">
-        <div style="font:italic 14px 'Spectral',serif;color:rgba(232,221,196,.6)">{{ turnPrefix }}</div>
-        <div style="font-family:'Cinzel',serif;font-weight:600;font-size:33px;letter-spacing:.05em;line-height:1.15;color:#c9a227;text-shadow:0 0 26px rgba(201,162,39,.3)">{{ turnName }}</div>
+        <div style="font:italic 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6)">{{ turnPrefix }}</div>
+        <div style="font-family:'Cinzel',serif;font-weight:600;font-size:33px;letter-spacing:.05em;line-height:1.15;color:var(--gold);text-shadow:0 0 26px rgba(var(--goldRgb),.3)">{{ turnName }}</div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
-          <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(201,162,39,.5))"></div>
-          <div style="color:#c05a6d;font-size:11px">✦</div>
-          <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(201,162,39,.5),transparent)"></div>
+          <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(var(--goldRgb),.5))"></div>
+          <div style="color:var(--rose);font-size:11px">✦</div>
+          <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(var(--goldRgb),.5),transparent)"></div>
         </div>
         <sc-if value="{{ anyMates }}" hint-placeholder-val="{{ false }}">
-          <div style="font:13px 'Spectral',serif;color:rgba(232,221,196,.55);margin-top:6px"><span style="color:#c05a6d">⚭</span> {{ matesLine }}</div>
+          <div style="font:13px 'Spectral',serif;color:rgba(var(--parchRgb),.55);margin-top:6px"><span style="color:var(--rose)">⚭</span> {{ matesLine }}</div>
         </sc-if>
         <sc-if value="{{ anyKings }}" hint-placeholder-val="{{ false }}">
-          <div style="font:13px 'Spectral',serif;color:rgba(232,221,196,.55);margin-top:4px"><span style="color:#c9a227">♛</span> {{ kingsLine }}</div>
+          <div style="font:13px 'Spectral',serif;color:rgba(var(--parchRgb),.55);margin-top:4px"><span style="color:var(--gold)">♛</span> {{ kingsLine }}</div>
         </sc-if>
         <sc-if value="{{ anyQM }}" hint-placeholder-val="{{ false }}">
-          <div style="font:13px 'Spectral',serif;color:rgba(232,221,196,.55);margin-top:4px"><span style="color:#c05a6d">⚖</span> {{ qmLine }}</div>
+          <div style="font:13px 'Spectral',serif;color:rgba(var(--parchRgb),.55);margin-top:4px"><span style="color:var(--rose)">⚖</span> {{ qmLine }}</div>
         </sc-if>
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:12px 0;perspective:1000px">
-        <div style="position:absolute;width:200px;height:320px;border-radius:14px;background:#1f170d;transform:rotate(-5deg);border:1px solid rgba(201,162,39,.2)"></div>
-        <div style="position:absolute;width:200px;height:320px;border-radius:14px;background:#241b10;transform:rotate(3deg);border:1px solid rgba(201,162,39,.3)"></div>
+        <div style="position:absolute;width:200px;height:320px;border-radius:14px;background:var(--deck1);transform:rotate(-5deg);border:1px solid rgba(var(--goldRgb),.2)"></div>
+        <div style="position:absolute;width:200px;height:320px;border-radius:14px;background:var(--deck2);transform:rotate(3deg);border:1px solid rgba(var(--goldRgb),.3)"></div>
         <div sc-camel-on-click="{{ onDeckTap }}" style="width:200px;height:320px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:{{ flipTransition }};transform:rotateY({{ flipDeg }}deg)">
-          <div style="position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;background:radial-gradient(circle at 50% 50%, #4a2028 0%, #33161c 60%, #261014 100%);border:2px solid #c9a227;box-shadow:0 12px 30px rgba(0,0,0,.55), inset 0 0 0 6px #261014, inset 0 0 0 7px rgba(201,162,39,.6);display:flex;align-items:center;justify-content:center">
-            <div style="width:130px;height:230px;border:1px solid rgba(201,162,39,.5);border-radius:80px / 120px;display:flex;align-items:center;justify-content:center">
-              <div style="font-family:'Cinzel',serif;font-weight:500;font-size:54px;letter-spacing:.04em;color:#c9a227;text-shadow:0 0 24px rgba(201,162,39,.4)">K</div>
+          <div style="position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;background:radial-gradient(circle at 50% 50%, var(--back1) 0%, var(--back2) 60%, var(--back3) 100%);border:2px solid var(--gold);box-shadow:0 12px 30px rgba(0,0,0,.55), inset 0 0 0 6px var(--back3), inset 0 0 0 7px rgba(var(--goldRgb),.6);display:flex;align-items:center;justify-content:center">
+            <div style="width:130px;height:230px;border:1px solid rgba(var(--goldRgb),.5);border-radius:80px / 120px;display:flex;align-items:center;justify-content:center">
+              <div style="font-family:'Cinzel',serif;font-weight:500;font-size:54px;letter-spacing:.04em;color:var(--gold);text-shadow:0 0 24px rgba(var(--goldRgb),.4)">K</div>
             </div>
-            <div style="position:absolute;bottom:10px;width:100%;text-align:center;font:italic 12px 'Spectral',serif;color:rgba(201,162,39,.8);letter-spacing:.08em">{{ tapHint }}</div>
+            <div style="position:absolute;bottom:10px;width:100%;text-align:center;font:italic 12px 'Spectral',serif;color:rgba(var(--goldRgb),.8);letter-spacing:.08em">{{ tapHint }}</div>
           </div>
           <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);border-radius:14px;background:{{ faceBg }};border:{{ faceBorder }};box-shadow:{{ faceShadow }};display:flex;flex-direction:column;align-items:center;padding:14px 12px;box-sizing:border-box">
-            <div style="position:absolute;inset:7px;border:1px solid rgba(201,162,39,.4);border-radius:9px"></div>
+            <div style="position:absolute;inset:7px;border:1px solid rgba(var(--goldRgb),.4);border-radius:9px"></div>
             <div lang="{{ langCode }}" style="font:500 12px 'Spectral',serif;letter-spacing:.22em;color:{{ kickerColor }};margin-top:5px">{{ cardKicker }}</div>
-            <div style="flex:1;width:88%;margin:8px 0;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,162,39,.45);border-radius:4px;background:{{ panelBg }};position:relative;overflow:hidden;padding:7px;box-sizing:border-box">
-              <div style="position:absolute;inset:3px;border:1px solid rgba(201,162,39,.22);border-radius:2px;pointer-events:none"></div>
+            <div style="flex:1;width:88%;margin:8px 0;display:flex;align-items:center;justify-content:center;border:1px solid rgba(var(--goldRgb),.45);border-radius:4px;background:{{ panelBg }};position:relative;overflow:hidden;padding:7px;box-sizing:border-box">
+              <div style="position:absolute;inset:3px;border:1px solid rgba(var(--goldRgb),.22);border-radius:2px;pointer-events:none"></div>
               <sc-if value="{{ isSwords }}" hint-placeholder-val="{{ false }}">
                 <svg sc-camel-view-box="0 0 100 150" style="display:block;height:100%;width:auto">
-                  <g stroke="#c9a227" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <g stroke="var(--gold)" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <g stroke-width=".8" opacity=".45"><path d="M17 26 V32"></path><path d="M14 29 H20"></path><path d="M84 44 V49"></path><path d="M81 46.5 H87"></path><path d="M23 62 V66"></path><path d="M21 64 H25"></path></g>
                     <path d="M37 34 H63"></path>
                     <path d="M37 34 V25 L43 30 L50 21 L57 30 L63 25 V34"></path>
@@ -445,7 +505,7 @@ input::placeholder{color:rgba(232,221,196,.35)}
               </sc-if>
               <sc-if value="{{ isCups }}" hint-placeholder-val="{{ false }}">
                 <svg sc-camel-view-box="0 0 100 150" style="display:block;height:100%;width:auto">
-                  <g stroke="#c9a227" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <g stroke="var(--gold)" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <g stroke-width=".8" opacity=".5"><path d="M50 14 V28"></path><path d="M43 21 H57"></path><path d="M45 16 L55 26"></path><path d="M55 16 L45 26"></path></g>
                     <path d="M31 56 H69 Q67 80 50 89 Q33 80 31 56 Z"></path>
                     <path d="M31 56 Q50 65 69 56" stroke-width=".8" opacity=".55"></path>
@@ -461,7 +521,7 @@ input::placeholder{color:rgba(232,221,196,.35)}
               </sc-if>
               <sc-if value="{{ isPentacles }}" hint-placeholder-val="{{ false }}">
                 <svg sc-camel-view-box="0 0 100 150" style="display:block;height:100%;width:auto">
-                  <g stroke="#c9a227" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <g stroke="var(--gold)" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="50" cy="58" r="27"></circle>
                     <circle cx="50" cy="58" r="22" stroke-width=".8" opacity=".5"></circle>
                     <path d="M50 37 L62.9 76.4 L29.4 52.2 H70.6 L37.1 76.4 Z"></path>
@@ -478,7 +538,7 @@ input::placeholder{color:rgba(232,221,196,.35)}
               </sc-if>
               <sc-if value="{{ isWands }}" hint-placeholder-val="{{ false }}">
                 <svg sc-camel-view-box="0 0 100 150" style="display:block;height:100%;width:auto">
-                  <g stroke="#c9a227" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <g stroke="var(--gold)" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M37 133 L63 24"></path>
                     <path d="M42 134 L68 26" stroke-width=".8" opacity=".45"></path>
                     <path d="M59 42 Q47 38 45 26 Q57 28 59 42 Z" stroke-width="1.3"></path>
@@ -495,39 +555,51 @@ input::placeholder{color:rgba(232,221,196,.35)}
               </sc-if>
             </div>
             <div lang="{{ langCode }}" style="font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.09em;text-transform:uppercase;color:{{ ruleNameColor }};line-height:1.25;text-align:center">{{ cardRuleName }}</div>
-            <div style="font:italic 12px 'Spectral',serif;color:rgba(232,221,196,.6);margin-top:3px;text-align:center">{{ cardRuleSub }}</div>
+            <div style="font:italic 12px 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:3px;text-align:center">{{ cardRuleSub }}</div>
           </div>
         </div>
       </div>
-      <div style="margin:0 34px 26px;padding:16px 20px;border:1px solid rgba(201,162,39,.35);background:rgba(201,162,39,.06);border-radius:8px;text-align:center;min-height:84px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:8px">
-        <div style="font:400 16px/1.5 'Spectral',serif;color:#e8ddc4;text-wrap:pretty">{{ bannerText }}</div>
+      <div style="margin:0 34px 26px;padding:16px 20px;border:1px solid rgba(var(--goldRgb),.35);background:rgba(var(--goldRgb),.06);border-radius:8px;text-align:center;min-height:84px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:8px">
+        <div style="font:400 16px/1.5 'Spectral',serif;color:var(--parch);text-wrap:pretty">{{ bannerText }}</div>
         <sc-if value="{{ showTally }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center">
-            <span style="font:italic 12px 'Spectral',serif;color:rgba(232,221,196,.45)">{{ tallyLabel }}</span>
+            <span style="font:italic 12px 'Spectral',serif;color:rgba(var(--parchRgb),.45)">{{ tallyLabel }}</span>
             <sc-for list="{{ tally }}" as="p" hint-placeholder-count="3">
-              <div style="display:flex;align-items:center;gap:2px;border:1px solid rgba(201,162,39,.3);border-radius:999px;padding:2px 3px">
-                <button sc-camel-on-click="{{ p.onSub }}" style="width:22px;height:22px;border-radius:999px;border:none;background:transparent;color:#c05a6d;font:600 15px 'Spectral',serif;cursor:pointer;opacity:{{ p.subOpacity }};display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:rgba(192,90,109,.15)">−</button>
-                <span style="font:600 13px 'Spectral',serif;color:rgba(232,221,196,.85);padding:0 2px">{{ p.name }}</span>
-                <span style="font:600 13px 'Spectral',serif;color:#c9a227;min-width:12px;text-align:center">{{ p.count }}</span>
-                <button sc-camel-on-click="{{ p.onAdd }}" style="width:22px;height:22px;border-radius:999px;border:none;background:transparent;color:#c9a227;font:600 15px 'Spectral',serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:rgba(201,162,39,.15)">+</button>
+              <div style="display:flex;align-items:center;gap:2px;border:1px solid rgba(var(--goldRgb),.3);border-radius:999px;padding:2px 3px">
+                <button sc-camel-on-click="{{ p.onSub }}" style="width:22px;height:22px;border-radius:999px;border:none;background:transparent;color:var(--rose);font:600 15px 'Spectral',serif;cursor:pointer;opacity:{{ p.subOpacity }};display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:rgba(192,90,109,.15)">−</button>
+                <span style="font:600 13px 'Spectral',serif;color:rgba(var(--parchRgb),.85);padding:0 2px">{{ p.name }}</span>
+                <span style="font:600 13px 'Spectral',serif;color:var(--gold);min-width:12px;text-align:center">{{ p.count }}</span>
+                <button sc-camel-on-click="{{ p.onAdd }}" style="width:22px;height:22px;border-radius:999px;border:none;background:transparent;color:var(--gold);font:600 15px 'Spectral',serif;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:rgba(var(--goldRgb),.15)">+</button>
               </div>
             </sc-for>
           </div>
         </sc-if>
+        <sc-if value="{{ showRuleInput }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:8px">
+            <input value="{{ ruleDraft }}" sc-camel-on-change="{{ onRuleDraft }}" sc-camel-on-key-down="{{ onRuleKey }}" placeholder="{{ rulePlaceholder }}" style="flex:1;background:rgba(var(--goldRgb),.06);border:1px solid rgba(var(--goldRgb),.35);border-radius:8px;padding:8px 12px;font:500 14px 'Spectral',serif;color:var(--parch);outline:none;min-width:0" style-focus="border-color:var(--gold);box-shadow:0 0 0 2px rgba(var(--goldRgb),.2)">
+            <button sc-camel-on-click="{{ addRule }}" style="flex:none;background:transparent;border:1px solid rgba(var(--goldRgb),.5);border-radius:8px;padding:8px 12px;font:600 12px 'Spectral',serif;color:var(--gold);cursor:pointer" style-hover="background:rgba(var(--goldRgb),.12)">{{ addRuleLabel }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showTimer }}" hint-placeholder-val="{{ false }}">
+          <button sc-camel-on-click="{{ startTimer }}" style="align-self:center;background:transparent;border:1px solid rgba(var(--goldRgb),.5);border-radius:999px;padding:6px 16px;font:600 13px 'Spectral',serif;color:var(--gold);cursor:pointer" style-hover="background:rgba(var(--goldRgb),.12)">{{ timerLabel }}</button>
+        </sc-if>
         <sc-if value="{{ showMatePicker }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
             <sc-for list="{{ mateOptions }}" as="m" hint-placeholder-count="2">
-              <button sc-camel-on-click="{{ m.onPick }}" style="font:600 14px 'Spectral',serif;color:#c9a227;border:1px solid rgba(201,162,39,.5);background:transparent;padding:7px 16px;border-radius:999px;cursor:pointer" style-hover="background:rgba(201,162,39,.12)">{{ m.name }}</button>
+              <button sc-camel-on-click="{{ m.onPick }}" style="font:600 14px 'Spectral',serif;color:var(--gold);border:1px solid rgba(var(--goldRgb),.5);background:transparent;padding:7px 16px;border-radius:999px;cursor:pointer" style-hover="background:rgba(var(--goldRgb),.12)">{{ m.name }}</button>
             </sc-for>
-            <button sc-camel-on-click="{{ skipMate }}" style="font:italic 13px 'Spectral',serif;color:rgba(232,221,196,.5);border:1px solid rgba(232,221,196,.2);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer">{{ skipLabel }}</button>
+            <button sc-camel-on-click="{{ skipMate }}" style="font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.5);border:1px solid rgba(var(--parchRgb),.2);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer">{{ skipLabel }}</button>
           </div>
         </sc-if>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0 34px 34px">
-        <div style="font:14px 'Spectral',serif;color:rgba(232,221,196,.55)">{{ deckLabelPre }} <span style="color:#c9a227">{{ deckCount }}</span> {{ deckLabelPost }}</div>
+        <div style="font:14px 'Spectral',serif;color:rgba(var(--parchRgb),.55)">{{ deckLabelPre }} <span style="color:var(--gold)">{{ deckCount }}</span> {{ deckLabelPost }}</div>
         <div style="display:flex;gap:8px">
-          <button sc-camel-on-click="{{ backToSetup }}" style="font:600 13px 'Spectral',serif;color:rgba(232,221,196,.6);border:1px solid rgba(232,221,196,.25);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="border-color:rgba(232,221,196,.5)">{{ playersLabel }}</button>
-          <button sc-camel-on-click="{{ shuffle }}" style="font:600 13px 'Spectral',serif;color:#c9a227;border:1px solid rgba(201,162,39,.5);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(201,162,39,.1)">↻ {{ shuffleLabel }}</button>
+          <sc-if value="{{ showPass }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ passTurn }}" style="font:600 13px 'Spectral',serif;color:var(--rose);border:1px solid rgba(var(--roseRgb),.5);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(var(--roseRgb),.15)">⤼ {{ passLabel }}</button>
+          </sc-if>
+          <button sc-camel-on-click="{{ backToSetup }}" style="font:600 13px 'Spectral',serif;color:rgba(var(--parchRgb),.6);border:1px solid rgba(var(--parchRgb),.25);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">{{ playersLabel }}</button>
+          <button sc-camel-on-click="{{ shuffle }}" style="font:600 13px 'Spectral',serif;color:var(--gold);border:1px solid rgba(var(--goldRgb),.5);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(var(--goldRgb),.1)">↻ {{ shuffleLabel }}</button>
         </div>
       </div>
     </div>
@@ -536,25 +608,25 @@ input::placeholder{color:rgba(232,221,196,.35)}
   <sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
     <div style="flex:1;display:flex;flex-direction:column;padding:14px 40px 44px">
       <div style="text-align:center">
-        <div lang="{{ langCode }}" style="font-family:'Cinzel',serif;font-weight:600;font-size:23px;letter-spacing:.1em;text-transform:uppercase;color:#c9a227;line-height:1.2">{{ statsTitle }}</div>
-        <div style="font:italic 13px 'Spectral',serif;color:rgba(232,221,196,.45);margin-top:2px">{{ statsSub }}</div>
+        <div lang="{{ langCode }}" style="font-family:'Cinzel',serif;font-weight:600;font-size:23px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);line-height:1.2">{{ statsTitle }}</div>
+        <div style="font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.45);margin-top:2px">{{ statsSub }}</div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
-          <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(201,162,39,.5))"></div>
-          <div style="color:#c05a6d;font-size:12px">✦</div>
-          <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(201,162,39,.5),transparent)"></div>
+          <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(var(--goldRgb),.5))"></div>
+          <div style="color:var(--rose);font-size:12px">✦</div>
+          <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(var(--goldRgb),.5),transparent)"></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
         <sc-for list="{{ board }}" as="r" hint-placeholder-count="3">
           <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:30px;text-align:center;font:600 14px 'Spectral',serif;color:rgba(201,162,39,.6)">{{ r.rank }}</div>
+            <div style="width:30px;text-align:center;font:600 14px 'Spectral',serif;color:rgba(var(--goldRgb),.6)">{{ r.rank }}</div>
             <div style="flex:1">
               <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
                 <div style="font-family:'Cinzel',serif;font-weight:500;font-size:{{ r.nameSize }};letter-spacing:.04em;color:{{ r.nameColor }};line-height:1.2">{{ r.name }} {{ r.crown }}</div>
-                <div style="font:600 16px 'Spectral',serif;color:#c9a227">{{ r.count }}</div>
+                <div style="font:600 16px 'Spectral',serif;color:var(--gold)">{{ r.count }}</div>
               </div>
-              <div style="height:6px;margin-top:5px;border:1px solid rgba(201,162,39,.3);border-radius:999px;overflow:hidden">
-                <div style="height:100%;width:{{ r.barWidth }};background:linear-gradient(90deg,#8a2b3a,#c9a227)"></div>
+              <div style="height:6px;margin-top:5px;border:1px solid rgba(var(--goldRgb),.3);border-radius:999px;overflow:hidden">
+                <div style="height:100%;width:{{ r.barWidth }};background:linear-gradient(90deg,var(--bar1),var(--gold))"></div>
               </div>
             </div>
           </div>
@@ -562,42 +634,75 @@ input::placeholder{color:rgba(232,221,196,.35)}
       </div>
       <div style="flex:1"></div>
       <div style="text-align:center;padding:18px 0">
-        <div style="font:600 11px 'Spectral',serif;letter-spacing:.2em;color:#c05a6d">{{ championLabel }}</div>
-        <div style="font-family:'Cinzel',serif;font-weight:600;font-size:20px;letter-spacing:.1em;color:#c9a227;line-height:1.25;margin-top:4px">{{ championName }}</div>
-        <div style="font:15px 'Spectral',serif;color:rgba(232,221,196,.6);margin-top:8px"><span style="color:#c9a227;font-weight:600">{{ totalDrinks }}</span> {{ totalLabel }}</div>
+        <div style="font:13px 'Spectral',serif;color:rgba(var(--parchRgb),.5);margin-bottom:10px">{{ cardsPlayedLine }}</div>
+        <sc-if value="{{ isCouple }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px solid rgba(var(--goldRgb),.35);border-radius:8px;padding:12px 14px;margin-bottom:14px">
+            <div style="font:600 10px 'Spectral',serif;letter-spacing:.2em;color:var(--rose)">{{ promiseLabel }}</div>
+            <div style="font:italic 15px/1.45 'Spectral',serif;color:var(--parch);margin-top:6px;text-wrap:pretty">{{ promiseText }}</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showChampion }}" hint-placeholder-val="{{ true }}">
+        <div style="font:600 11px 'Spectral',serif;letter-spacing:.2em;color:var(--rose)">{{ championLabel }}</div>
+        <div style="font-family:'Cinzel',serif;font-weight:600;font-size:20px;letter-spacing:.1em;color:var(--gold);line-height:1.25;margin-top:4px">{{ championName }}</div>
+        <div style="font:15px 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:8px"><span style="color:var(--gold);font-weight:600">{{ totalDrinks }}</span> {{ totalLabel }}</div>
+        </sc-if>
       </div>
-      <button sc-camel-on-click="{{ playAgain }}" style="background:#c9a227;border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:#241b10;cursor:pointer" style-hover="background:#e4c65a">{{ againLabel }}</button>
-      <button sc-camel-on-click="{{ backToSetup }}" style="margin-top:10px;background:transparent;border:1px solid rgba(232,221,196,.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(232,221,196,.6);cursor:pointer" style-hover="border-color:rgba(232,221,196,.5)">{{ newPlayersLabel }}</button>
+      <button sc-camel-on-click="{{ playAgain }}" style="background:var(--gold);border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ againLabel }}</button>
+      <button sc-camel-on-click="{{ backToSetup }}" style="margin-top:10px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">{{ newPlayersLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ rulesOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:7;background:var(--veil);display:flex;align-items:center;justify-content:center;padding:34px">
+      <div style="width:100%;max-width:320px;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:22px 20px;box-shadow:0 20px 50px rgba(0,0,0,.6);position:relative">
+        <div style="position:absolute;inset:6px;border:1px solid rgba(var(--goldRgb),.3);border-radius:8px;pointer-events:none"></div>
+        <div style="text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">{{ rulesTitle }}</div>
+        <div style="margin:14px 2px 18px;display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto">
+          <sc-if value="{{ anyRules }}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{ houseRules }}" as="r" hint-placeholder-count="2">
+              <div style="display:flex;gap:8px;align-items:flex-start">
+                <div style="font:600 13px 'Spectral',serif;color:rgba(var(--goldRgb),.7)">{{ r.numeral }}</div>
+                <div style="flex:1;font:14px/1.4 'Spectral',serif;color:var(--parch);text-align:left">{{ r.text }}</div>
+                <button sc-camel-on-click="{{ r.onRemove }}" style="width:20px;height:20px;flex:none;border-radius:999px;border:1px solid rgba(var(--roseRgb),.5);background:transparent;color:var(--rose);font-size:11px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center">✕</button>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ rulesEmptyShown }}" hint-placeholder-val="{{ false }}">
+            <div style="font:italic 14px 'Spectral',serif;color:rgba(var(--parchRgb),.45);text-align:center">{{ rulesEmpty }}</div>
+          </sc-if>
+        </div>
+        <button sc-camel-on-click="{{ closeRules }}" style="width:100%;background:var(--gold);border:none;border-radius:999px;padding:12px;font:600 15px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ closeLabel }}</button>
+      </div>
     </div>
   </sc-if>
 
   <sc-if value="{{ promptOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;inset:0;z-index:6;background:rgba(14,10,5,.82);display:flex;align-items:center;justify-content:center;padding:34px">
-      <div style="width:100%;max-width:320px;background:linear-gradient(170deg,#2e2415,#241b10);border:1.5px solid #c9a227;border-radius:12px;padding:22px 20px;box-shadow:0 20px 50px rgba(0,0,0,.6);position:relative">
-        <div style="position:absolute;inset:6px;border:1px solid rgba(201,162,39,.3);border-radius:8px;pointer-events:none"></div>
-        <div lang="{{ langCode }}" style="text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#c9a227;line-height:1.35">{{ promptTitle }}</div>
-        <div style="text-align:center;font:600 11px 'Spectral',serif;letter-spacing:.18em;color:#c05a6d;margin-top:4px">{{ promptPos }}</div>
-        <div style="font:400 16px/1.55 'Spectral',serif;color:#e8ddc4;text-align:center;margin:16px 4px 20px;min-height:82px;display:flex;align-items:center;justify-content:center;text-wrap:pretty">{{ promptText }}</div>
-        <div style="border-top:1px solid rgba(201,162,39,.25);padding-top:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px">
-          <div style="font:600 10px 'Spectral',serif;letter-spacing:.2em;color:#c05a6d">{{ myPromptsLabel }}</div>
+    <div style="position:absolute;inset:0;z-index:6;background:var(--veil);display:flex;align-items:center;justify-content:center;padding:34px">
+      <div style="width:100%;max-width:320px;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:22px 20px;box-shadow:0 20px 50px rgba(0,0,0,.6);position:relative">
+        <div style="position:absolute;inset:6px;border:1px solid rgba(var(--goldRgb),.3);border-radius:8px;pointer-events:none"></div>
+        <div lang="{{ langCode }}" style="text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);line-height:1.35">{{ promptTitle }}</div>
+        <div style="text-align:center;font:600 11px 'Spectral',serif;letter-spacing:.18em;color:var(--rose);margin-top:4px">{{ promptPos }}</div>
+        <div style="font:400 16px/1.55 'Spectral',serif;color:var(--parch);text-align:center;margin:16px 4px 20px;min-height:82px;display:flex;align-items:center;justify-content:center;text-wrap:pretty">{{ promptText }}</div>
+        <div style="border-top:1px solid rgba(var(--goldRgb),.25);padding-top:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px">
+          <div style="font:600 10px 'Spectral',serif;letter-spacing:.2em;color:var(--rose)">{{ myPromptsLabel }}</div>
           <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:5px;max-height:104px;overflow-y:auto">
               <sc-for list="{{ myPrompts }}" as="m" hint-placeholder-count="1">
                 <div style="display:flex;gap:8px;align-items:flex-start">
-                  <div style="flex:1;font:14px/1.4 'Spectral',serif;color:rgba(232,221,196,.7);text-align:left">{{ m.text }}</div>
-                  <button sc-camel-on-click="{{ m.onRemove }}" style="width:20px;height:20px;flex:none;border-radius:999px;border:1px solid rgba(138,43,58,.5);background:transparent;color:#c05a6d;font-size:11px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center">✕</button>
+                  <div style="flex:1;font:14px/1.4 'Spectral',serif;color:rgba(var(--parchRgb),.7);text-align:left">{{ m.text }}</div>
+                  <button sc-camel-on-click="{{ m.onRemove }}" style="width:20px;height:20px;flex:none;border-radius:999px;border:1px solid rgba(var(--roseRgb),.5);background:transparent;color:var(--rose);font-size:11px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center">✕</button>
                 </div>
               </sc-for>
             </div>
           </sc-if>
           <div style="display:flex;gap:8px">
-            <input value="{{ draft }}" sc-camel-on-change="{{ onDraft }}" sc-camel-on-key-down="{{ onDraftKey }}" placeholder="{{ draftPlaceholder }}" style="flex:1;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.35);border-radius:8px;padding:9px 12px;font:500 14px 'Spectral',serif;color:#e8ddc4;outline:none;min-width:0" style-focus="border-color:#c9a227;box-shadow:0 0 0 2px rgba(201,162,39,.2)">
-            <button sc-camel-on-click="{{ addPrompt }}" style="flex:none;background:transparent;border:1px solid rgba(201,162,39,.5);border-radius:8px;padding:9px 12px;font:600 13px 'Spectral',serif;color:#c9a227;cursor:pointer" style-hover="background:rgba(201,162,39,.12)">{{ addPromptLabel }}</button>
+            <input value="{{ draft }}" sc-camel-on-change="{{ onDraft }}" sc-camel-on-key-down="{{ onDraftKey }}" placeholder="{{ draftPlaceholder }}" style="flex:1;background:rgba(var(--goldRgb),.06);border:1px solid rgba(var(--goldRgb),.35);border-radius:8px;padding:9px 12px;font:500 14px 'Spectral',serif;color:var(--parch);outline:none;min-width:0" style-focus="border-color:var(--gold);box-shadow:0 0 0 2px rgba(var(--goldRgb),.2)">
+            <button sc-camel-on-click="{{ addPrompt }}" style="flex:none;background:transparent;border:1px solid rgba(var(--goldRgb),.5);border-radius:8px;padding:9px 12px;font:600 13px 'Spectral',serif;color:var(--gold);cursor:pointer" style-hover="background:rgba(var(--goldRgb),.12)">{{ addPromptLabel }}</button>
           </div>
         </div>
         <div style="display:flex;gap:10px">
-          <button sc-camel-on-click="{{ nextPrompt }}" style="flex:1;background:#c9a227;border:none;border-radius:999px;padding:12px;font:600 15px 'Spectral',serif;color:#241b10;cursor:pointer" style-hover="background:#e4c65a">{{ anotherLabel }}</button>
-          <button sc-camel-on-click="{{ closePrompts }}" style="background:transparent;border:1px solid rgba(232,221,196,.3);border-radius:999px;padding:12px 18px;font:600 15px 'Spectral',serif;color:rgba(232,221,196,.65);cursor:pointer" style-hover="border-color:rgba(232,221,196,.6)">{{ closeLabel }}</button>
+          <button sc-camel-on-click="{{ nextPrompt }}" style="flex:1;background:var(--gold);border:none;border-radius:999px;padding:12px;font:600 15px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ anotherLabel }}</button>
+          <button sc-camel-on-click="{{ closePrompts }}" style="background:transparent;border:1px solid rgba(var(--parchRgb),.3);border-radius:999px;padding:12px 18px;font:600 15px 'Spectral',serif;color:rgba(var(--parchRgb),.65);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.6)">{{ closeLabel }}</button>
         </div>
       </div>
     </div>
@@ -609,7 +714,9 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = {
-      screen: 'setup',
+      screen: 'modes',
+      mode: props.startMode ?? 'friends',
+      spice: 2,
       lang: props.startLang ?? 'tr',
       musicOn: props.soundDefault ?? true,
       sfxOn: props.soundDefault ?? true,
@@ -627,9 +734,16 @@ class Component extends DCLogic {
       promptOpen: false,
       promptIdx: 0,
       customPrompts: this.loadCustom(),
-      draft: ''
+      draft: '',
+      houseRules: [],
+      rulesOpen: false,
+      ruleDraft: '',
+      promise: '',
+      passes: {},
+      cardsPlayed: 0,
+      timerLeft: 0
     };
-    this.ac = null; this.master = null; this.musicTimer = null; this.noteIdx = 0; this.drones = [];
+    this.ac = null; this.master = null; this.musicTimer = null; this.noteIdx = 0; this.drones = []; this.timer = null;
   }
   loadCustom() {
     try { return JSON.parse(localStorage.getItem('kingscup.customPrompts') || '{}'); } catch (e) { return {}; }
@@ -637,9 +751,9 @@ class Component extends DCLogic {
   saveCustom(obj) {
     try { localStorage.setItem('kingscup.customPrompts', JSON.stringify(obj)); } catch (e) {}
   }
-  makeDeck() {
+  makeDeck(suits) {
     const d = [];
-    for (let s = 0; s < 4; s++) for (let r = 1; r <= 13; r++) d.push({ r, s });
+    for (let s = 0; s < (suits || 4); s++) for (let r = 1; r <= 13; r++) d.push({ r, s });
     for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; }
     return d;
   }
@@ -744,6 +858,7 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     this.stopMusic();
+    this.stopTimer();
     if (this.ac) { try { this.ac.close(); } catch (e) {} }
   }
   // ---- data ----
@@ -757,42 +872,194 @@ class Component extends DCLogic {
       ],
       roman: ['', 'AS', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'VALE', 'KIZ', 'PAPAZ'],
       romanEn: ['', 'ACE', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'JACK', 'QUEEN', 'KING'],
-      prompts: {
-        3: {
-          title: { tr: 'Örnek Doğruluk / Cesaretlilik', en: 'Example Truths & Dares' },
-          tr: ['Doğruluk: Masadaki kimi en az tanıyorsun?', 'Cesaretlilik: Rehberindeki üçüncü kişiyi ara ve şarkı söyle.', 'Doğruluk: En son kime yalan söyledin?', 'Cesaretlilik: Telefonundaki son fotoğrafı herkese göster.', 'Doğruluk: Buradakilerden hangisiyle bir gün yer değiştirirdin?', 'Cesaretlilik: Bir sonraki turu aksanla konuşarak geçir.', 'Doğruluk: En utandığın an neydi?', 'Cesaretlilik: Solundakine iltifat, sağındakine eleştiri yap.'],
-          en: ['Truth: Who at this table do you know the least?', 'Dare: Call the third contact in your phone and sing to them.', 'Truth: Who did you last lie to?', 'Dare: Show everyone the last photo on your phone.', 'Truth: Who here would you swap lives with for a day?', 'Dare: Speak in an accent for the whole next round.', 'Truth: Your most embarrassing moment?', 'Dare: Compliment the player on your left, roast the one on your right.']
+      // Each mode is a full deck: 13 rules, its own prompts and its own palette class.
+      // kind: hot = highlighted card, mate = pick a partner, qm = question master,
+      // king = fourth-king cup, rule = adds to the house rules, promise = writes the closing vow.
+      modes: {
+        friends: {
+          label: { tr: 'Arkadaşlar', en: 'Friends' },
+          desc: { tr: 'Klasik kadeh gecesi', en: 'The classic night out' },
+          players: { tr: '3+ oyuncu', en: '3+ players' },
+          glyph: '♠', suits: 4,
+          prompts: {
+            3: {
+              title: { tr: 'Örnek Doğruluk / Cesaretlilik', en: 'Example Truths & Dares' },
+              tr: ['Doğruluk: Masadaki kimi en az tanıyorsun?', 'Cesaretlilik: Rehberindeki üçüncü kişiyi ara ve şarkı söyle.', 'Doğruluk: En son kime yalan söyledin?', 'Cesaretlilik: Telefonundaki son fotoğrafı herkese göster.', 'Doğruluk: Buradakilerden hangisiyle bir gün yer değiştirirdin?', 'Cesaretlilik: Bir sonraki turu aksanla konuşarak geçir.', 'Doğruluk: En utandığın an neydi?', 'Cesaretlilik: Solundakine iltifat, sağındakine eleştiri yap.'],
+              en: ['Truth: Who at this table do you know the least?', 'Dare: Call the third contact in your phone and sing to them.', 'Truth: Who did you last lie to?', 'Dare: Show everyone the last photo on your phone.', 'Truth: Who here would you swap lives with for a day?', 'Dare: Speak in an accent for the whole next round.', 'Truth: Your most embarrassing moment?', 'Dare: Compliment the player on your left, roast the one on your right.']
+            },
+            4: {
+              title: { tr: 'Örnek "Daha Önce Hiç"', en: 'Example "Never Have I Ever"' },
+              tr: ['Daha önce hiç dersten ya da işten kaçmadım.', 'Daha önce hiç birine yanlış isimle hitap etmedim.', 'Daha önce hiç gece yarısı mesaj atıp pişman olmadım.', 'Daha önce hiç bileti yanlış tarihe almadım.', 'Daha önce hiç yabancı bir şehirde kaybolmadım.', 'Daha önce hiç birinin adını unutup tanıyormuş gibi yapmadım.', 'Daha önce hiç bir yalanı kurtarmak için yalan uydurmadım.', 'Daha önce hiç sırf fotoğraf için bir yere gitmedim.'],
+              en: ['Never have I ever skipped class or work.', 'Never have I ever called someone by the wrong name.', 'Never have I ever texted at midnight and regretted it.', 'Never have I ever booked a ticket for the wrong date.', 'Never have I ever gotten lost in a foreign city.', 'Never have I ever pretended to recognise someone I forgot.', 'Never have I ever told a lie to cover another lie.', 'Never have I ever gone somewhere just for the photo.']
+            }
+          },
+          rules: [null,
+            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone drinks; you may not stop before the player on your left.'] },
+            { tr: ['Sen Seç', 'Masadan birini seç — o içer.'], en: ['You Choose', 'Choose someone at the table — they drink.'] },
+            { tr: ['Doğruluk mu Cesaretlilik mi', 'Doğruluk mu, cesaretlilik mi? Seç — yapmayan içer.'], en: ['Truth or Dare', 'Truth or dare? Choose one — refuse and you drink.'], sec: 60 },
+            { tr: ['Daha Önce Hiç', '"Daha önce hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never Have I Ever', 'Say "never have I ever..." — everyone who has, drinks.'] },
+            { tr: ['Beyler', 'Bütün erkekler içer.'], en: ['Guys', 'All the guys drink.'] },
+            { tr: ['Hanımlar', 'Bütün kadınlar içer.'], en: ['Chicks', 'All the ladies drink.'] },
+            { tr: ['Göğe El', 'Elini göğe kaldır — en son kaldıran içer.'], en: ['Heaven', 'Point to the sky — last hand up drinks.'], kind: 'hot' },
+            { tr: ['Yoldaş', 'Kendine bir yoldaş seç; sen içtikçe o da içer.'], en: ['Mate', 'Pick a mate; whenever you drink, they drink.'], kind: 'mate' },
+            { tr: ['Cümle Başlat', 'Bir cümle başlat; sırayla birer kelime ekleyin. Cümleyi bozan içer.'], en: ['Start a Sentence', 'Start a sentence; each player adds a word. Whoever breaks it drinks.'] },
+            { tr: ['Kategori', 'Bir kategori seç; sırayla örnek verin. Takılan içer.'], en: ['Categories', 'Pick a category; take turns naming one. First to fail drinks.'] },
+            { tr: ['Kural Koy', 'Yeni bir kural koy. Bozan herkes içer.'], en: ['Make a Rule', 'Invent a new rule. Whoever breaks it drinks.'], kind: 'rule' },
+            { tr: ['Soru Ustası', 'Soru Ustası seçildi! {name} adlı oyuncunun sorularına "üstad" demeden cevap veren içer.'], en: ['Question Master', 'Question Master has been selected! Anyone who answers {name}\'s questions without saying "your honor" drinks.'], kind: 'qm' },
+            { tr: ['Kral Kadehi', 'Kadehe biraz doldur. Dördüncü Papaz\'ı çeken hepsini içer!'], en: ["King's Cup", 'Pour into the cup. Whoever draws the fourth King drinks it all!'], kind: 'king' }
+          ]
         },
-        4: {
-          title: { tr: 'Örnek "Daha Önce Hiç"', en: 'Example "Never Have I Ever"' },
-          tr: ['Daha önce hiç dersten ya da işten kaçmadım.', 'Daha önce hiç birine yanlış isimle hitap etmedim.', 'Daha önce hiç gece yarısı mesaj atıp pişman olmadım.', 'Daha önce hiç bileti yanlış tarihe almadım.', 'Daha önce hiç yabancı bir şehirde kaybolmadım.', 'Daha önce hiç birinin adını unutup tanıyormuş gibi yapmadım.', 'Daha önce hiç bir yalanı kurtarmak için yalan uydurmadım.', 'Daha önce hiç sırf fotoğraf için bir yere gitmedim.'],
-          en: ['Never have I ever skipped class or work.', 'Never have I ever called someone by the wrong name.', 'Never have I ever texted at midnight and regretted it.', 'Never have I ever booked a ticket for the wrong date.', 'Never have I ever gotten lost in a foreign city.', 'Never have I ever pretended to recognise someone I forgot.', 'Never have I ever told a lie to cover another lie.', 'Never have I ever gone somewhere just for the photo.']
+        colleagues: {
+          label: { tr: 'İş Arkadaşları', en: 'Colleagues' },
+          desc: { tr: 'Mesai sonrası, herkese uygun', en: 'After work, safe for everyone' },
+          players: { tr: '3+ oyuncu', en: '3+ players' },
+          glyph: '♣', suits: 4,
+          prompts: {
+            3: {
+              title: { tr: 'Örnek Doğruluk / Görev', en: 'Example Truths & Tasks' },
+              tr: ['Doğruluk: İlk iş gününde ne kadar geç kaldın?', 'Görev: Bir sonraki turu sadece emoji anlatır gibi konuş.', 'Doğruluk: Hangi toplantı aslında bir e-posta olabilirdi?', 'Görev: Kendini bir dizi karakteri gibi tanıt.', 'Doğruluk: İşe alınırken en çok neyi abarttın?', 'Görev: Bir sonraki turda her cümleye "hızlıca senkronize olalım" diye başla.', 'Doğruluk: Çalışırken en çok hangi şarkıyı dinliyorsun?', 'Görev: Yan masadakinin işini otuz saniyede anlat.'],
+              en: ['Truth: How late were you on your first day?', 'Task: Speak only in emoji descriptions for a round.', 'Truth: Which meeting could have been an email?', 'Task: Introduce yourself as a TV character.', 'Truth: What did you exaggerate most in your interview?', 'Task: Start every sentence with "let us quickly sync" for a round.', 'Truth: What do you listen to while working?', 'Task: Explain your neighbour\'s job in thirty seconds.']
+            },
+            4: {
+              title: { tr: 'Örnek "İşte Hiç"', en: 'Example "Never at Work"' },
+              tr: ['İşte hiç pijamayla toplantıya girmedim.', 'İşte hiç "ekranımı paylaşıyorum" deyip yanlış sekmeyi açmadım.', 'İşte hiç cevaplamadığım bir e-postayı okundu bırakmadım.', 'İşte hiç toplantıda uyuklamadım.', 'İşte hiç mikrofonum kapalı sanıp konuşmadım.', 'İşte hiç son dakika teslim tarihi kaçırmadım.', 'İşte hiç "tamamdır, bakıyorum" deyip unutmadım.', 'İşte hiç yanlışlıkla herkese yanıtla dememdim.'],
+              en: ['Never at work have I joined a meeting in pyjamas.', 'Never at work have I shared the wrong tab on screen share.', 'Never at work have I left an email read and unanswered.', 'Never at work have I dozed off in a meeting.', 'Never at work have I spoken while muted.', 'Never at work have I missed a deadline at the last minute.', 'Never at work have I said "on it" and forgotten.', 'Never at work have I hit reply-all by accident.']
+            }
+          },
+          rules: [null,
+            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone starts; you cannot stop before the person on your left.'] },
+            { tr: ['Görevlendir', 'Masadan birini seç — o içer.'], en: ['Nominate', 'Pick someone — they drink.'] },
+            { tr: ['Doğruluk mu Görev mi', 'Hafif bir doğruluk ya da küçük bir görev seç — yapmayan içer.'], en: ['Truth or Task', 'A mild truth, or a small task — refuse and you drink.'], sec: 60 },
+            { tr: ['İşte Hiç', '"İşte hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never at Work', 'Say "never at work have I..." — everyone who has, drinks.'] },
+            { tr: ['Kıdemliler', 'İki yıldan uzun süredir burada olan herkes içer.'], en: ['Veterans', 'Everyone here more than two years drinks.'] },
+            { tr: ['Yeniler', 'Son iki yılda aramıza katılan herkes içer.'], en: ['Newcomers', 'Everyone who joined in these two years drinks.'] },
+            { tr: ['Göğe El', 'Elini göğe kaldır — en son kaldıran içer.'], en: ['Heaven', 'Hand up last, you drink.'], kind: 'hot' },
+            { tr: ['Mesai Dostu', 'Kendine bir mesai dostu seç; sen içtikçe o da içer.'], en: ['Work Buddy', 'Pick a buddy; you drink, they drink.'], kind: 'mate' },
+            { tr: ['Jargon Zinciri', 'Zinciri tekrarla ve bir iş jargonu ekle. Takılan içer.'], en: ['Buzzword Chain', 'Repeat the chain, add a corporate buzzword. Blank out, drink.'] },
+            { tr: ['Kategori', 'Bir kategori seç — takımlar, isimler, SQL tabloları. Takılan içer.'], en: ['Categories', 'Name teams, people, SQL tables. First to fail drinks.'] },
+            { tr: ['Ofis Kuralı', 'Yeni bir kural koy ("bir önceki e-postamda dediğim gibi" demeden konuşmak yok). Bozan içer.'], en: ['Office Rule', 'Invent a rule ("say per my last email before speaking"). Whoever breaks it drinks.'], kind: 'rule' },
+            { tr: ['Soru Ustası', 'Soru Ustası {name}! Sorularına "patron" demeden cevap veren içer.'], en: ['Question Master', 'Question Master is {name}! Answer their questions without saying "boss" and you drink.'], kind: 'qm' },
+            { tr: ['Patronun Kupası', 'Masadaki en yetkili kişi içer.'], en: ["The Boss's Mug", 'The person with the most authority drinks.'] }
+          ]
+        },
+        passionfruit: {
+          label: { tr: 'Çarkıfelek', en: 'Passionfruit' },
+          desc: { tr: 'Biraz yaramaz, biraz cesur', en: 'A little naughty, a little bold' },
+          players: { tr: '3+ oyuncu', en: '3+ players' },
+          glyph: '♥', suits: 4, spicy: true,
+          prompts: {
+            3: {
+              title: { tr: 'Örnek Doğruluk / Cesaret', en: 'Example Truths & Dares' },
+              tr: [
+                ['Doğruluk: Masadaki en iyi gülüş kimde?', 'Cesaret: Sağındakine samimi bir iltifat et.', 'Doğruluk: İlk aşkın kaç yaşındaydın?', 'Cesaret: Solundakiyle on saniye göz göze kal.'],
+                ['Doğruluk: Buradakilerden kiminle bir kahve içmek isterdin?', 'Cesaret: Birine fısıltıyla bir sır söyle.', 'Doğruluk: En kötü randevun nasıl geçti?', 'Cesaret: Seçtiğin kişiyle rollerinizi değiştirip onu taklit et.'],
+                ['Doğruluk: Masada kime en çok çekildin?', 'Cesaret: Birinin eline otuz saniye boyunca tut.', 'Doğruluk: Pişman olduğun bir öpücük var mı?', 'Cesaret: Seçtiğin kişiye en iyi replikini söyle.']
+              ],
+              en: [
+                ['Truth: Who has the best laugh at this table?', 'Dare: Pay the person on your right a sincere compliment.', 'Truth: How old were you at your first crush?', 'Dare: Hold eye contact with the player on your left for ten seconds.'],
+                ['Truth: Who here would you most like to grab a coffee with?', 'Dare: Whisper a secret to someone.', 'Truth: How bad was your worst date?', 'Dare: Swap roles with someone and imitate them.'],
+                ['Truth: Who at this table do you find most attractive?', 'Dare: Hold someone\'s hand for thirty seconds.', 'Truth: Is there a kiss you regret?', 'Dare: Try your best pick-up line on the person you choose.']
+              ]
+            },
+            4: {
+              title: { tr: 'Örnek "Daha Önce Hiç"', en: 'Example "Never Have I Ever"' },
+              tr: [
+                ['Daha önce hiç birine gizlice bakmadım.', 'Daha önce hiç bir randevuya geç kalmadım.', 'Daha önce hiç eski sevgilimin profiline bakmadım.', 'Daha önce hiç sırf hoşlandığım biri için plan değiştirmedim.'],
+                ['Daha önce hiç yarım kalan bir mesajı silmedim.', 'Daha önce hiç iki kişiyle aynı anda konuşmadım.', 'Daha önce hiç birinin arkadaşından hoşlanmadım.', 'Daha önce hiç gece yarısı "uyuyor musun" yazmadım.'],
+                ['Daha önce hiç ilk buluşmada öpüşmedim.', 'Daha önce hiç bir ilişkiyi mesajla bitirmedim.', 'Daha önce hiç tanımadığım birine numaramı vermedim.', 'Daha önce hiç birine hislerimi itiraf edip pişman olmadım.']
+              ],
+              en: [
+                ['Never have I ever stolen a glance at someone.', 'Never have I ever been late to a date.', 'Never have I ever checked an ex\'s profile.', 'Never have I ever changed my plans for a crush.'],
+                ['Never have I ever deleted a message half-written.', 'Never have I ever talked to two people at once.', 'Never have I ever fancied a friend of someone I know.', 'Never have I ever texted "are you awake" at midnight.'],
+                ['Never have I ever kissed on a first date.', 'Never have I ever ended a relationship by text.', 'Never have I ever given my number to a stranger.', 'Never have I ever confessed feelings and regretted it.']
+              ]
+            }
+          },
+          rules: [null,
+            { tr: ['Yavaş Şelale', 'Solundakiyle göz göze şelale; o durmadan sen de duramazsın.'], en: ['Slow Waterfall', 'Waterfall, but hold eye contact with the player on your left.'] },
+            { tr: ['Baştan Çıkarma', 'Birini seç: ya içer ya da senin sorunu cevaplar.'], en: ['Temptation', 'Pick someone: they drink, or they answer your question.'] },
+            { tr: ['Ateşli Doğruluk mu Cesaret mi', 'Doğruluk mu, cesaret mi? Yapmayan içer.'], en: ['Spicy Truth or Dare', 'Truth or dare? Refuse and you drink.'], sec: 60 },
+            { tr: ['Daha Önce Hiç', '"Daha önce hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never Have I Ever', 'Say "never have I ever..." — everyone who has, drinks.'] },
+            { tr: ['Sahipli', 'İlişkisi olan herkes içer.'], en: ['Taken', 'Everyone in a relationship drinks.'] },
+            { tr: ['Özgür', 'Bekar olan herkes içer.'], en: ['Free', 'Everyone single drinks.'] },
+            { tr: ['Son Dokunuş', 'Elini masaya en son koyan içer.'], en: ['Last Touch', 'Last to put a hand on the table drinks.'], kind: 'hot' },
+            { tr: ['Suç Ortağı', 'Kendine bir suç ortağı seç; sen içtikçe o da içer.'], en: ['Partner in Crime', 'Pick a partner; whenever you drink, they drink.'], kind: 'mate' },
+            { tr: ['İtiraf Zinciri', 'Bir itiraf cümlesi başlat; sırayla birer kelime ekleyin. Bozan içer.'], en: ['Confession Chain', 'Start a confession; each player adds a word. Whoever breaks it drinks.'] },
+            { tr: ['Kategori', 'Kategori seç — replikler, kırmızı bayraklar, tanışma uygulamaları. Takılan içer.'], en: ['Categories', 'Pick-up lines, red flags, dating apps. First to fail drinks.'] },
+            { tr: ['Ev Kuralı', 'Herkes için bir kural koy. Bozan içer.'], en: ['House Rule', 'Set a rule for everyone. Whoever breaks it drinks.'], kind: 'rule' },
+            { tr: ['Sırların Bekçisi', 'Sırların Bekçisi {name}! Sorularına "lordum" demeden cevap veren içer.'], en: ['Keeper of Secrets', 'Keeper of Secrets is {name}! Answer their questions without saying "my lord" and you drink.'], kind: 'qm' },
+            { tr: ['Tutku Kadehi', 'Kadehe biraz doldur. Dördüncü Papaz\'ı çeken hepsini içer!'], en: ['Passion Cup', 'Pour into the cup. Whoever draws the fourth King drinks it all!'], kind: 'king' }
+          ]
+        },
+        pineapple: {
+          label: { tr: 'Ananas', en: 'Pineapple' },
+          desc: { tr: 'İki kişilik buluşma destesi', en: 'A deck for two on a date' },
+          players: { tr: '2 oyuncu', en: '2 players' },
+          glyph: '♦', suits: 2, couple: true,
+          prompts: {
+            3: {
+              title: { tr: 'Örnek Doğruluk / Cesaret', en: 'Example Truths & Dares' },
+              tr: ['Doğruluk: Bana ilk bakışta ne düşündün?', 'Cesaret: Bana en sevdiğin şarkıyı mırıldan.', 'Doğruluk: Son ağladığın film neydi?', 'Cesaret: Beni tek cümleyle güldürmeye çalış.', 'Doğruluk: Kendinde en çok neyi seviyorsun?', 'Cesaret: Bir dakika boyunca sadece sorularla konuş.', 'Doğruluk: Hayalindeki gün nasıl geçerdi?', 'Cesaret: Beni taklit et, ben tahmin edeyim.'],
+              en: ['Truth: What did you think when you first saw me?', 'Dare: Hum your favourite song to me.', 'Truth: What film last made you cry?', 'Dare: Make me laugh in one sentence.', 'Truth: What do you like most about yourself?', 'Dare: Speak only in questions for one minute.', 'Truth: How would your perfect day go?', 'Dare: Imitate me and let me guess.']
+            },
+            4: {
+              title: { tr: 'Örnek "Daha Önce Hiç"', en: 'Example "Never Have I Ever"' },
+              tr: ['Daha önce hiç tek başıma seyahat etmedim.', 'Daha önce hiç birine sürpriz hediye almadım.', 'Daha önce hiç gece yarısı yürüyüşe çıkmadım.', 'Daha önce hiç bir konserde en öne geçmedim.', 'Daha önce hiç yemek yaparken yangın alarmını çalıştırmadım.', 'Daha önce hiç bir kitabı tek gecede bitirmedim.', 'Daha önce hiç plansız bir bilet almadım.', 'Daha önce hiç yıldızları saymaya çalışmadım.'],
+              en: ['Never have I ever travelled alone.', 'Never have I ever bought someone a surprise gift.', 'Never have I ever gone for a midnight walk.', 'Never have I ever pushed to the front row at a concert.', 'Never have I ever set off the smoke alarm cooking.', 'Never have I ever finished a book in one night.', 'Never have I ever booked a ticket on impulse.', 'Never have I ever tried to count the stars.']
+            },
+            10: {
+              title: { tr: 'Örnek "Hangisi Olsun"', en: 'Example "Would You Rather"' },
+              tr: ['Dağ evi mi, deniz kenarı mı?', 'Sabah kahvesi mi, gece yürüyüşü mü?', 'Sürpriz tatil mi, planlı yolculuk mu?', 'Aynı şarkıyı bin kez mi, hiç müzik dinlememek mi?', 'Geçmişi görmek mi, geleceği bilmek mi?', 'Her yemeği sen mi yapsan, her bulaşığı sen mi yıkasan?'],
+              en: ['Cabin in the mountains or a house by the sea?', 'Morning coffee or a midnight walk?', 'A surprise trip or a planned journey?', 'One song a thousand times, or no music at all?', 'See the past or know the future?', 'Cook every meal or wash every dish?']
+            }
+          },
+          rules: [null,
+            { tr: ['Ayna', 'Sıradaki karta kadar onun her hareketini taklit et.'], en: ['Mirror', 'Copy everything they do until the next card.'] },
+            { tr: ['Sen Karar Ver', 'Ona bir yudum ver ya da bir soru sor.'], en: ['Your Call', 'Give them a sip, or ask them a question.'] },
+            { tr: ['Doğruluk mu Cesaret mi', 'Doğruluk mu, cesaret mi? Yapmayan içer.'], en: ['Truth or Dare', 'Truth or dare? Refuse and you drink.'], sec: 60 },
+            { tr: ['Daha Önce Hiç', 'Sen söyle; o yaptıysa içer.'], en: ['Never Have I Ever', 'You say it; if they have, they drink.'] },
+            { tr: ['İlk İzlenim', 'Beni ilk beş dakikada nasıl buldun?'], en: ['First Impression', 'What did you think of me in the first five minutes?'] },
+            { tr: ['Üç Kelime', 'Birbirinizi üç kelimeyle anlatın.'], en: ['Three Words', 'Describe each other in three words.'] },
+            { tr: ['Göz Göze', 'Otuz saniye göz göze, konuşmak yok. Önce gülen içer.'], en: ['Eye Contact', 'Thirty seconds, no words. First to laugh or look away drinks.'], kind: 'hot', sec: 30 },
+            { tr: ['Bizim Şarkı', 'Sana onu hatırlatan bir şarkı çal.'], en: ['Our Song', 'Play a song that reminds you of them.'] },
+            { tr: ['Hikâye Zinciri', 'Birlikte çıkacağınız yolculuğu birer kelimeyle anlatın. Bozan içer.'], en: ['Story Chain', 'Build the trip you would take together, one word each. Whoever breaks it drinks.'] },
+            { tr: ['Hangisi Olsun', 'Sırayla "hangisini seçerdin" diye sorun.'], en: ['Would You Rather', 'Take turns asking "would you rather".'] },
+            { tr: ['Randevu Kuralı', 'Gecenin geri kalanı için bir kural koy.'], en: ['Date Rule', 'Set a rule for the rest of the night.'], kind: 'rule' },
+            { tr: ['Soru Ustası', 'Ona üç soru sor; istediğin konuda.'], en: ['Question Master', 'Ask them three questions, any topic.'] },
+            { tr: ['Ortak Kadeh', 'Kadeh kaldırın ve bir sonraki buluşma için bir söz verin.'], en: ['Shared Cup', 'Raise a toast and make a promise for the next date.'], kind: 'promise' }
+          ]
         }
-      },
-      rules: [null,
-        { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone drinks; you may not stop before the player on your left.'] },
-        { tr: ['Sen Seç', 'Masadan birini seç — o içer.'], en: ['You Choose','Choose someone at the table — they drink.'] },
-        { tr: ['Doğruluk mu Cesaretlilik mi', 'Doğruluk mu, cesaretlilik mi? Seç — yapmayan içer.'], en: ['Truth or Dare', 'Truth or dare? Choose one — refuse and you drink.'] },
-        { tr: ['Daha Önce Hiç', '"Daha önce hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never Have I Ever', 'Say "never have I ever..." — everyone who has, drinks.'] },
-        { tr: ['Beyler', 'Bütün erkekler içer.'], en: ['Guys', 'All the guys drink.'] },
-        { tr: ['Hanımlar', 'Bütün kadınlar içer.'], en: ['Chicks', 'All the ladies drink.'] },
-        { tr: ['Göğe El', 'Elini göğe kaldır — en son kaldıran içer.'], en: ['Heaven', 'Point to the sky — last hand up drinks.'] },
-        { tr: ['Yoldaş', 'Kendine bir yoldaş seç; sen içtikçe o da içer.'], en: ['Mate', 'Pick a mate; whenever you drink, they drink.'] },
-        { tr: ['Cümle Başlat', 'Bir cümle başlat; sırayla birer kelime ekleyin. Cümleyi bozan içer.'], en: ['Start a Sentence', 'Start a sentence; each player adds a word. Whoever breaks it drinks.'] },
-        { tr: ['Kategori', 'Bir kategori seç; sırayla örnek verin. Takılan içer.'], en: ['Categories', 'Pick a category; take turns naming one. First to fail drinks.'] },
-        { tr: ['Kural Koy', 'Yeni bir kural koy. Bozan herkes içer.'], en: ['Make a Rule', 'Invent a new rule. Whoever breaks it drinks.'] },
-        { tr: ['Soru Ustası', 'Soru Ustası seçildi! {name} adlı oyuncunun sorularına "üstad" demeden cevap veren içer.'], en: ['Question Master', 'Question Master has been selected! Anyone who answers {name}\'s questions without saying "your honor" drinks.'] },
-        { tr: ['Kral Kadehi', 'Kadehe biraz doldur. Dördüncü Papaz\'ı çeken hepsini içer!'], en: ["King's Cup", 'Pour into the cup. Whoever draws the fourth King drinks it all!'] }
-      ]
+      }
     };
   }
+  startTimer(sec) {
+    this.stopTimer();
+    this.setState({ timerLeft: sec });
+    this.timer = setInterval(() => {
+      this.setState(s => {
+        const left = s.timerLeft - 1;
+        if (left > 0) return { timerLeft: left };
+        this.stopTimer();
+        setTimeout(() => this.playBell(), 0);
+        return { timerLeft: 0 };
+      });
+    }, 1000);
+  }
+  stopTimer() { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
   renderVals() {
-    const { lang, screen, musicOn, sfxOn, names, players, turn, deck, drawn, angle, mates, pendingMate, questionMaster, kings, drinks, promptOpen, promptIdx, customPrompts, draft } = this.state;
+    const { lang, screen, mode, spice, musicOn, sfxOn, names, players, turn, deck, drawn, angle, mates, pendingMate,
+      questionMaster, kings, drinks, promptOpen, promptIdx, customPrompts, draft, houseRules, rulesOpen, ruleDraft,
+      promise, passes, cardsPlayed, timerLeft } = this.state;
     const D = this.data();
+    const M = D.modes[mode] || D.modes.friends;
+    const R = M.rules;
     const tr = lang === 'tr';
     const t = (a, b) => (tr ? a : b);
     const showSub = this.props.showBothLanguages ?? true;
     const flipped = (angle / 180) % 2 === 1;
+    const deckSize = M.suits * 13;
+    const rule = drawn ? R[drawn.r] : null;
+    const kind = rule ? (rule.kind || '') : '';
     // players are keyed by name, so duplicates get a numeric suffix: "Ali", "Ali 2"
     const validNames = [];
     names.map(n => n.trim()).filter(Boolean).forEach(n => {
@@ -800,26 +1067,28 @@ class Component extends DCLogic {
       while (validNames.some(v => v.toLocaleLowerCase(lang) === name.toLocaleLowerCase(lang))) name = `${n} ${k++}`;
       validNames.push(name);
     });
-    const setupPlayers = names.map((name, i) => ({
+    const maxPlayers = M.couple ? 2 : 10;
+    const minPlayers = 2;
+    const setupPlayers = names.slice(0, maxPlayers).map((name, i) => ({
       name,
       numeral: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][i] || (i + 1),
       placeholder: t('Oyuncu adı', 'Player name'),
       onChange: (e) => { const ns = [...names]; ns[i] = e.target.value; this.setState({ names: ns }); },
-      onRemove: () => { if (names.length > 2) this.setState({ names: names.filter((_, j) => j !== i) }); },
-      removeOpacity: names.length > 2 ? 1 : 0.25
+      onRemove: () => { if (names.length > minPlayers) this.setState({ names: names.filter((_, j) => j !== i) }); },
+      removeOpacity: names.length > minPlayers ? 1 : 0.25
     }));
     let cardKicker = '', cardRuleName = '', cardRuleSub = '';
     let bannerText = t('Kartı çevirmek için desteye dokun.', 'Tap the deck to turn a card.');
     if (drawn) {
-      const s = D.suits[drawn.s], rule = D.rules[drawn.r], loc = tr ? rule.tr : rule.en, alt = tr ? rule.en : rule.tr;
+      const s = D.suits[drawn.s], loc = tr ? rule.tr : rule.en, alt = tr ? rule.en : rule.tr;
       cardKicker = tr ? `${D.roman[drawn.r]} · ${s.tr.toLocaleUpperCase('tr')}` : `${D.romanEn[drawn.r]} · ${s.en.toLocaleUpperCase('en')}`;
       cardRuleName = loc[0];
       cardRuleSub = showSub ? alt[0] : '';
       bannerText = loc[1];
-      if (drawn.r === 12) bannerText = bannerText.split('{name}').join(questionMaster || players[turn] || '');
-      if (drawn.r === 13) {
+      if (kind === 'qm') bannerText = bannerText.split('{name}').join(questionMaster || players[turn] || '');
+      if (kind === 'king') {
         bannerText = kings >= 4
-          ? t(`Dördüncü Papaz! ${players[turn] || ''} kral kadehini sonuna kadar içer!`, `The fourth King! ${players[turn] || ''} drains the King's Cup!`)
+          ? t(`Dördüncü Papaz! ${players[turn] || ''} kadehi sonuna kadar içer!`, `The fourth King! ${players[turn] || ''} drains the cup!`)
           : t(`Kadehe biraz doldur. Papaz ${kings}/4 — dördüncüyü çeken hepsini içer!`, `Pour into the cup. King ${kings}/4 — whoever draws the fourth drinks it all!`);
       }
     }
@@ -835,11 +1104,14 @@ class Component extends DCLogic {
       onPick: () => this.setState(s => ({ mates: { ...s.mates, [cur]: [...(s.mates[cur] || []), p] }, pendingMate: false }))
     }));
     const matePairs = Object.entries(mates).filter(([, list]) => list.length);
-    const hasPrompts = !!drawn && !!D.prompts[drawn.r];
-    const promptSet = hasPrompts ? D.prompts[drawn.r] : null;
-    const customKey = drawn ? `${drawn.r}-${lang}` : '';
+    const promptSet = drawn ? M.prompts[drawn.r] : null;
+    const hasPrompts = !!promptSet;
+    // passionfruit prompt lists are tiered by spice level; take every level up to the chosen one
+    const rawList = promptSet ? (tr ? promptSet.tr : promptSet.en) : [];
+    const basePrompts = rawList.length && Array.isArray(rawList[0]) ? rawList.slice(0, spice).reduce((a, b) => a.concat(b), []) : rawList;
+    const customKey = drawn ? `${mode}-${drawn.r}-${lang}` : '';
     const mine = (customPrompts[customKey] || []);
-    const promptList = promptSet ? [...(tr ? promptSet.tr : promptSet.en), ...mine] : [];
+    const promptList = [...basePrompts, ...mine];
     const tally = players.map(p => ({
       name: p,
       count: drinks[p] || 0,
@@ -866,11 +1138,12 @@ class Component extends DCLogic {
         count: r.count,
         rank: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][i] || (i + 1),
         barWidth: `${Math.round((r.count / maxDrinks) * 100)}%`,
-        nameColor: i === 0 ? '#c9a227' : '#e8ddc4',
+        nameColor: i === 0 ? 'var(--gold)' : 'var(--parch)',
         nameSize: i === 0 ? '20px' : '16px',
-        crown: i === 0 && r.count > 0 ? '♛' : ''
+        crown: i === 0 && r.count > 0 ? (M.couple ? '♥' : '♛') : ''
       }));
     const totalDrinks = players.reduce((n, p) => n + (drinks[p] || 0), 0);
+    const totalPasses = players.reduce((n, p) => n + (passes[p] || 0), 0);
     const addPrompt = () => {
       const text = draft.trim();
       if (!text) return;
@@ -880,12 +1153,51 @@ class Component extends DCLogic {
         return { customPrompts: next, draft: '', promptIdx: promptList.length };
       });
     };
-    const freshRound = () => ({ deck: this.makeDeck(), drawn: null, pendingMate: false, kings: 0, promptOpen: false });
+    // the house-rules input doubles as the closing promise on the couple deck
+    const writesPromise = kind === 'promise';
+    const addRule = () => {
+      const text = ruleDraft.trim();
+      if (!text) return;
+      if (writesPromise) this.setState({ promise: text, ruleDraft: '' });
+      else this.setState(s => ({ houseRules: [...s.houseRules, text], ruleDraft: '' }));
+    };
+    const nextTurn = (extra) => {
+      this.playFlick();
+      this.stopTimer();
+      if (!deck.length) { this.stopMusic(); this.setState({ ...extra, angle: angle + 180, timerLeft: 0, screen: 'stats' }); return; }
+      this.setState({ ...extra, angle: angle + 180, timerLeft: 0, turn: (turn + 1) % players.length });
+    };
+    const freshRound = () => ({ deck: this.makeDeck(M.suits), drawn: null, pendingMate: false, kings: 0, promptOpen: false, timerLeft: 0 });
+    const freshGame = () => ({ ...freshRound(), mates: {}, questionMaster: null, drinks: {}, houseRules: [], passes: {}, cardsPlayed: 0, promise: '', rulesOpen: false });
     return {
-      isSetup: screen === 'setup', isGame: screen === 'game', isStats: screen === 'stats',
+      isModes: screen === 'modes', isSetup: screen === 'setup', isGame: screen === 'game', isStats: screen === 'stats',
+      themeClass: 'mode-' + mode,
+      modeLabel: M.label[lang],
+      modeCards: Object.keys(D.modes).map(key => {
+        const m = D.modes[key];
+        return {
+          key,
+          name: m.label[lang],
+          desc: m.desc[lang],
+          players: m.players[lang],
+          glyph: m.glyph,
+          cls: 'mode-' + key,
+          onPick: () => this.setState({
+            ...freshGame(),
+            mode: key,
+            deck: this.makeDeck(m.suits),
+            names: m.couple ? ['', ''] : names,
+            screen: 'setup'
+          })
+        };
+      }),
+      modesTitle: t('Bir deste seç', 'Choose a deck'),
+      modesSub: t('Her destenin kendi kuralları var', 'Every deck has its own rules'),
+      backToModes: () => { this.stopMusic(); this.setState({ screen: 'modes' }); },
+      modesLabel: t('Desteler', 'Decks'),
       setTr: () => this.setState({ lang: 'tr' }), setEn: () => this.setState({ lang: 'en' }),
-      trBg: tr ? '#c9a227' : 'transparent', trFg: tr ? '#241b10' : '#c9a227',
-      enBg: !tr ? '#c9a227' : 'transparent', enFg: !tr ? '#241b10' : '#c9a227',
+      trBg: tr ? 'var(--gold)' : 'transparent', trFg: tr ? 'var(--ink)' : 'var(--gold)',
+      enBg: !tr ? 'var(--gold)' : 'transparent', enFg: !tr ? 'var(--ink)' : 'var(--gold)',
       toggleMusic: () => {
         const on = !musicOn;
         this.setState({ musicOn: on }, () => {
@@ -895,7 +1207,7 @@ class Component extends DCLogic {
       },
       toggleSfx: () => this.setState({ sfxOn: !sfxOn }),
       hasPrompts,
-      phoneFg: hasPrompts ? '#c9a227' : 'rgba(232,221,196,.28)',
+      phoneFg: hasPrompts ? 'var(--gold)' : 'rgba(var(--parchRgb),.28)',
       phoneTitle: hasPrompts ? t('Örnek sorular', 'Example prompts') : t('Bu kart için örnek yok', 'No prompts for this card'),
       openPrompts: () => { if (hasPrompts) this.setState({ promptOpen: true, promptIdx: 0 }); },
       closePrompts: () => this.setState({ promptOpen: false }),
@@ -923,22 +1235,33 @@ class Component extends DCLogic {
       hasMine: mine.length > 0,
       addPrompt,
       onDraftKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); addPrompt(); } },
-      musicFg: musicOn ? '#c9a227' : 'rgba(232,221,196,.35)',
+      musicFg: musicOn ? 'var(--gold)' : 'rgba(var(--parchRgb),.35)',
       musicDeco: musicOn ? 'none' : 'line-through',
       musicTitle: musicOn ? t('Müziği kapat', 'Music off') : t('Müziği aç', 'Music on'),
-      sfxFg: sfxOn ? '#c9a227' : 'rgba(232,221,196,.35)',
+      sfxFg: sfxOn ? 'var(--gold)' : 'rgba(var(--parchRgb),.35)',
       sfxDeco: sfxOn ? 'none' : 'line-through',
       sfxTitle: sfxOn ? t('Efektleri kapat', 'Effects off') : t('Efektleri aç', 'Effects on'),
-      setupTitle: t('Kadeh arkadaşlarını yaz', 'Name your companions'),
-      setupSub: t('En az iki oyuncu gerek', 'At least two players required'),
+      setupTitle: M.couple ? t('İkiniz de yazın', 'Both of you, write your names') : t('Kadeh arkadaşlarını yaz', 'Name your companions'),
+      setupSub: M.couple ? t('Bu deste iki kişilik', 'This deck is made for two') : t('En az iki oyuncu gerek', 'At least two players required'),
       setupPlayers,
-      addPlayer: () => { if (names.length < 10) this.setState({ names: [...names, ''] }); },
+      canAddPlayer: names.length < maxPlayers,
+      addPlayer: () => { if (names.length < maxPlayers) this.setState({ names: [...names, ''] }); },
       addLabel: t('Oyuncu ekle', 'Add player'),
+      // spice picker, passionfruit only
+      showSpice: !!M.spicy,
+      spiceLabel: t('SEVİYE', 'SPICE'),
+      spiceOptions: [1, 2, 3].map(n => ({
+        n,
+        label: [t('Hafif', 'Mild'), t('Ateşli', 'Hot'), t('Yakıcı', 'Blazing')][n - 1],
+        bg: spice === n ? 'var(--gold)' : 'transparent',
+        fg: spice === n ? 'var(--ink)' : 'var(--gold)',
+        onPick: () => this.setState({ spice: n })
+      })),
       startOpacity: validNames.length >= 2 ? 1 : 0.4,
       startLabel: t('Oyuna Başla', 'Begin the Game'),
       startGame: () => {
         if (validNames.length < 2) return;
-        this.setState({ ...freshRound(), screen: 'game', names: validNames, players: validNames, turn: 0, angle: 0, mates: {}, questionMaster: null, drinks: {} });
+        this.setState({ ...freshGame(), screen: 'game', names: validNames, players: validNames, turn: 0, angle: 0 });
         this.ensureAudio(); this.startMusic();
       },
       suitNameA: t('Kılıç', 'Swords'), suitNameB: t('Kupa', 'Cups'), suitNameC: t('Tılsım', 'Pentacles'), suitNameD: t('Asa', 'Wands'),
@@ -963,18 +1286,26 @@ class Component extends DCLogic {
             if (alt >= 0) { const tmp = nd[nd.length - 1]; nd[nd.length - 1] = nd[alt]; nd[alt] = tmp; }
           }
           const card = nd.pop();
-          const upd = { drawn: card, deck: nd, angle: angle + 180, pendingMate: card.r === 8 && mateOptions.length > 0 };
-          if (card.r === 12) upd.questionMaster = players[turn] || '';
-          if (card.r === 13) upd.kings = kings + 1;
+          const k = (R[card.r] && R[card.r].kind) || '';
+          const upd = { drawn: card, deck: nd, angle: angle + 180, timerLeft: 0, cardsPlayed: cardsPlayed + 1, pendingMate: k === 'mate' && mateOptions.length > 0 };
+          if (k === 'qm') upd.questionMaster = players[turn] || '';
+          if (k === 'king') upd.kings = kings + 1;
           this.setState(upd);
+          this.stopTimer();
           this.playFlick();
-          if (card.r === 7) this.playBell();
+          if (k === 'hot') this.playBell();
         } else {
-          this.playFlick();
-          if (!deck.length) { this.stopMusic(); this.setState({ angle: angle + 180, screen: 'stats' }); return; }
-          this.setState({ angle: angle + 180, turn: (turn + 1) % players.length });
+          nextTurn({});
         }
       },
+      // anyone may refuse a card without explaining — the turn just moves on
+      showPass: !!drawn && flipped && !pendingMate,
+      passLabel: t('Pas', 'Pass'),
+      passTurn: () => nextTurn({ passes: { ...passes, [cur]: (passes[cur] || 0) + 1 } }),
+      // countdown for cards that need one (dares, eye contact)
+      showTimer: !!drawn && flipped && !pendingMate && !!(rule && rule.sec),
+      timerLabel: timerLeft > 0 ? `⏱ ${Math.floor(timerLeft / 60)}:${String(timerLeft % 60).padStart(2, '0')}` : `⏱ ${t('Süre', 'Timer')} ${rule && rule.sec ? rule.sec : 0}s`,
+      startTimer: () => { if (rule && rule.sec) { this.ensureAudio(); this.startTimer(timerLeft > 0 ? 0 : rule.sec); } },
       showMatePicker: pendingMate,
       mateOptions,
       skipMate: () => this.setState({ pendingMate: false }),
@@ -984,39 +1315,67 @@ class Component extends DCLogic {
       isPentacles: !!drawn && drawn.s === 2,
       isWands: !!drawn && drawn.s === 3,
       cardKicker, cardRuleName, cardRuleSub,
-      // Heaven (7) gets a dark red & gold face so players spot it instantly
-      ...(drawn && drawn.r === 7 ? {
-        faceBg: 'radial-gradient(circle at 50% 35%, #7a1a28 0%, #4f0f1a 55%, #2e070e 100%)',
-        faceBorder: '3px solid #e4c65a',
-        faceShadow: '0 12px 30px rgba(0,0,0,.55), 0 0 28px rgba(228,198,90,.45)',
-        panelBg: 'linear-gradient(180deg,#3d0c15,#26060c)',
-        kickerColor: '#e4c65a',
-        ruleNameColor: '#e4c65a'
+      // the mode's signature card gets a hot face so players spot it instantly
+      ...(kind === 'hot' ? {
+        faceBg: 'radial-gradient(circle at 50% 35%, var(--hot1) 0%, var(--hot2) 55%, var(--hot3) 100%)',
+        faceBorder: '3px solid var(--hotGold)',
+        faceShadow: '0 12px 30px rgba(0,0,0,.55), 0 0 28px rgba(var(--goldRgb),.45)',
+        panelBg: 'linear-gradient(180deg,var(--hotP1),var(--hotP2))',
+        kickerColor: 'var(--hotGold)',
+        ruleNameColor: 'var(--hotGold)'
       } : {
-        faceBg: 'linear-gradient(170deg,#2e2415 0%, #241b10 100%)',
-        faceBorder: '2px solid #c9a227',
+        faceBg: 'linear-gradient(170deg,var(--face1) 0%, var(--face2) 100%)',
+        faceBorder: '2px solid var(--gold)',
         faceShadow: '0 12px 30px rgba(0,0,0,.55)',
-        panelBg: 'linear-gradient(180deg,#241a10,#1c1409)',
-        kickerColor: '#c05a6d',
-        ruleNameColor: '#e8ddc4'
+        panelBg: 'linear-gradient(180deg,var(--panel1),var(--panel2))',
+        kickerColor: 'var(--rose)',
+        ruleNameColor: 'var(--parch)'
       }),
       langCode: tr ? 'tr' : 'en',
       bannerText,
+      // house rules: every rule card adds one, and they stay on screen all night
+      showRuleInput: !!drawn && !pendingMate && (kind === 'rule' || writesPromise),
+      ruleDraft,
+      onRuleDraft: (e) => this.setState({ ruleDraft: e.target.value }),
+      onRuleKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); addRule(); } },
+      rulePlaceholder: writesPromise ? t('Sözünüzü yazın…', 'Write your promise…') : t('Kuralı yaz…', 'Write the rule…'),
+      addRuleLabel: writesPromise ? t('Sözü kaydet', 'Save promise') : t('Kuralı ekle', 'Add rule'),
+      addRule,
+      rulesCount: houseRules.length,
+      anyRules: houseRules.length > 0,
+      rulesTitle: t('EV KURALLARI', 'HOUSE RULES'),
+      rulesBtnTitle: t('Ev kuralları', 'House rules'),
+      rulesFg: houseRules.length ? 'var(--gold)' : 'rgba(var(--parchRgb),.28)',
+      openRules: () => this.setState({ rulesOpen: true }),
+      closeRules: () => this.setState({ rulesOpen: false }),
+      rulesOpen,
+      rulesEmpty: t('Henüz kural yok.', 'No rules yet.'),
+      rulesEmptyShown: houseRules.length === 0,
+      houseRules: houseRules.map((text, i) => ({
+        text,
+        numeral: `${i + 1}.`,
+        onRemove: () => this.setState(s => ({ houseRules: s.houseRules.filter((_, j) => j !== i) }))
+      })),
       deckLabelPre: t('Destede', ''), deckCount: deck.length, deckLabelPost: t('kart', 'cards left'),
       playersLabel: t('Oyuncular', 'Players'),
       shuffleLabel: t('Karıştır', 'Shuffle'),
       // flip the card back instead of snapping angle to 0 (which spun it through several turns)
-      shuffle: () => this.setState({ ...freshRound(), angle: flipped ? angle + 180 : angle, screen: 'game' }),
-      backToSetup: () => { this.stopMusic(); this.setState({ screen: 'setup' }); },
+      shuffle: () => { this.stopTimer(); this.setState({ ...freshRound(), angle: flipped ? angle + 180 : angle, screen: 'game' }); },
+      backToSetup: () => { this.stopMusic(); this.stopTimer(); this.setState({ screen: 'setup' }); },
       showTally: !!drawn && !pendingMate,
       tally, tallyLabel: t('kim içti?', 'who drank?'),
       board, totalDrinks,
-      statsTitle: t('Kadeh Boşaldı', 'The Cup Is Drained'),
-      statsSub: t('52 kart tamamlandı', 'All 52 cards played'),
+      isCouple: !!M.couple,
+      statsTitle: M.couple ? t('Deste Bitti', 'The Deck Is Done') : t('Kadeh Boşaldı', 'The Cup Is Drained'),
+      statsSub: t(`${deckSize} kart tamamlandı`, `All ${deckSize} cards played`),
       totalLabel: t('toplam yudum', 'drinks in total'),
+      showChampion: !M.couple,
       championLabel: t('GECENİN ŞAMPİYONU', 'CHAMPION OF THE NIGHT'),
       championName: board.length && board[0].count > 0 ? board[0].name : t('—', '—'),
-      playAgain: () => this.setState({ ...freshRound(), screen: 'game', angle: 0, turn: 0, mates: {}, questionMaster: null, drinks: {} }, () => this.startMusic()),
+      cardsPlayedLine: t(`${cardsPlayed} kart oynandı · ${totalPasses} pas`, `${cardsPlayed} cards played · ${totalPasses} passed`),
+      promiseLabel: t('BİR SONRAKİ BULUŞMA', 'FOR THE NEXT DATE'),
+      promiseText: promise || t('Söz verilmedi.', 'No promise was made.'),
+      playAgain: () => this.setState({ ...freshGame(), screen: 'game', angle: 0, turn: 0 }, () => this.startMusic()),
       againLabel: t('Yeni Oyun', 'Play Again'),
       newPlayersLabel: t('Oyuncuları Değiştir', 'Change Players')
     };
