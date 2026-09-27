@@ -402,14 +402,20 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
       <div style="text-align:center;font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.45);margin-top:2px">{{ modesSub }}</div>
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
         <sc-for list="{{ modeCards }}" as="m" hint-placeholder-count="4">
-          <button class="{{ m.cls }}" sc-camel-on-click="{{ m.onPick }}" style="display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:14px 16px;cursor:pointer" style-hover="border-color:var(--goldLite)">
+          <div class="{{ m.cls }}" sc-camel-on-click="{{ m.onPick }}" style="display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:14px 16px;cursor:pointer;box-sizing:border-box" style-hover="border-color:var(--goldLite)">
             <div style="width:42px;height:56px;flex:none;border-radius:6px;background:radial-gradient(circle at 50% 50%, var(--back1) 0%, var(--back2) 60%, var(--back3) 100%);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold)">{{ m.glyph }}</div>
             <div style="flex:1;min-width:0">
               <div style="font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)">{{ m.name }}</div>
               <div style="font:italic 13px 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:2px">{{ m.desc }}</div>
-              <div style="font:600 11px 'Spectral',serif;letter-spacing:.14em;color:var(--rose);margin-top:4px">{{ m.players }}</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">
+                <span style="font:600 11px 'Spectral',serif;letter-spacing:.14em;color:var(--rose)">{{ m.players }}</span>
+                <sc-if value="{{ m.edited }}" hint-placeholder-val="{{ false }}">
+                  <span style="font:600 10px 'Spectral',serif;letter-spacing:.1em;color:var(--gold)">✦ {{ m.editedLine }}</span>
+                </sc-if>
+              </div>
             </div>
-          </button>
+            <button sc-camel-on-click="{{ m.onAdjust }}" style="flex:none;align-self:stretch;background:transparent;border:1px solid rgba(var(--goldRgb),.45);border-radius:8px;padding:0 10px;font:600 11px 'Spectral',serif;letter-spacing:.06em;color:var(--gold);cursor:pointer" style-hover="background:rgba(var(--goldRgb),.14)">⚙<br>{{ m.adjustLabel }}</button>
+          </div>
         </sc-for>
       </div>
       <div style="flex:1"></div>
@@ -561,6 +567,9 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
             </div>
             <div lang="{{ langCode }}" style="font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.09em;text-transform:uppercase;color:{{ ruleNameColor }};line-height:1.25;text-align:center">{{ cardRuleName }}</div>
             <div style="font:italic 12px 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:3px;text-align:center">{{ cardRuleSub }}</div>
+            <sc-if value="{{ showCardSource }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:4px;font:600 9px 'Spectral',serif;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);border:1px solid rgba(var(--roseRgb),.45);border-radius:999px;padding:2px 7px">{{ cardSource }}</div>
+            </sc-if>
           </div>
         </div>
       </div>
@@ -600,6 +609,9 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0 34px 34px">
         <div style="font:14px 'Spectral',serif;color:rgba(var(--parchRgb),.55)">{{ deckLabelPre }} <span style="color:var(--gold)">{{ deckCount }}</span> {{ deckLabelPost }}</div>
         <div style="display:flex;gap:8px">
+          <sc-if value="{{ showSwap }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ swapCard }}" title="{{ swapLabel }}" style="font:600 13px 'Spectral',serif;color:rgba(var(--parchRgb),.6);border:1px solid rgba(var(--parchRgb),.25);background:transparent;padding:7px 11px;border-radius:999px;cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">⇄</button>
+          </sc-if>
           <sc-if value="{{ showPass }}" hint-placeholder-val="{{ false }}">
             <button sc-camel-on-click="{{ passTurn }}" style="font:600 13px 'Spectral',serif;color:var(--rose);border:1px solid rgba(var(--roseRgb),.5);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer" style-hover="background:rgba(var(--roseRgb),.15)">⤼ {{ passLabel }}</button>
           </sc-if>
@@ -655,6 +667,53 @@ input::placeholder{color:rgba(var(--parchRgb),.35)}
       <button sc-camel-on-click="{{ playAgain }}" style="background:var(--gold);border:none;border-radius:999px;padding:15px;font:600 17px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ againLabel }}</button>
       <button sc-camel-on-click="{{ backToSetup }}" style="margin-top:10px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">{{ newPlayersLabel }}</button>
       <button sc-camel-on-click="{{ backToModes }}" style="margin-top:8px;background:transparent;border:1px solid rgba(var(--parchRgb),.25);border-radius:999px;padding:12px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.6);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.5)">↩ {{ modesLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ editorOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:8;background:var(--veil);display:flex;align-items:center;justify-content:center;padding:26px">
+      <div style="width:100%;max-width:340px;background:linear-gradient(170deg,var(--face1),var(--face2));border:1.5px solid var(--gold);border-radius:12px;padding:20px 16px;box-shadow:0 20px 50px rgba(0,0,0,.6);position:relative;display:flex;flex-direction:column;max-height:82vh;box-sizing:border-box">
+        <div style="position:absolute;inset:6px;border:1px solid rgba(var(--goldRgb),.3);border-radius:8px;pointer-events:none"></div>
+        <div style="text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">{{ editorTitle }}</div>
+        <div style="text-align:center;font:600 11px 'Spectral',serif;letter-spacing:.18em;color:var(--rose);margin-top:3px">{{ editorSub }}</div>
+
+        <sc-if value="{{ editorListView }}" hint-placeholder-val="{{ true }}">
+          <div style="margin:14px 2px;display:flex;flex-direction:column;gap:2px;overflow-y:auto">
+            <sc-for list="{{ editorRows }}" as="r" hint-placeholder-count="4">
+              <button sc-camel-on-click="{{ r.onOpen }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:none;border-bottom:1px solid rgba(var(--goldRgb),.15);padding:9px 6px;cursor:pointer" style-hover="background:rgba(var(--goldRgb),.08)">
+                <span style="width:34px;flex:none;font:600 12px 'Spectral',serif;color:rgba(var(--goldRgb),.7)">{{ r.numeral }}</span>
+                <span style="flex:1;min-width:0;font:500 14px 'Spectral',serif;color:{{ r.nameColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</span>
+                <span style="flex:none;font:11px 'Spectral',serif;color:rgba(var(--parchRgb),.5)">{{ r.glyph }}</span>
+                <span style="flex:none;color:rgba(var(--parchRgb),.35);font-size:12px">›</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button sc-camel-on-click="{{ resetDeck }}" style="flex:1;background:transparent;border:1px solid rgba(var(--roseRgb),.5);border-radius:999px;padding:11px;font:600 13px 'Spectral',serif;color:var(--rose);cursor:pointer" style-hover="background:rgba(var(--roseRgb),.12)">↺ {{ resetDeckLabel }}</button>
+            <button sc-camel-on-click="{{ closeEditor }}" style="flex:1;background:var(--gold);border:none;border-radius:999px;padding:11px;font:600 14px 'Spectral',serif;color:var(--ink);cursor:pointer" style-hover="background:var(--goldLite)">{{ closeLabel }}</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ editorRankView }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:12px 2px;display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+            <div style="font:600 11px 'Spectral',serif;letter-spacing:.2em;color:rgba(var(--parchRgb),.5);text-align:center">{{ editorRankTitle }}</div>
+            <sc-for list="{{ editorOptions }}" as="o" hint-placeholder-count="4">
+              <button sc-camel-on-click="{{ o.onPick }}" style="text-align:left;width:100%;background:rgba(var(--goldRgb),.05);border:1px solid {{ o.border }};border-radius:10px;padding:10px 12px;cursor:pointer" style-hover="background:rgba(var(--goldRgb),.12)">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span style="font-size:12px;color:var(--rose)">{{ o.glyph }}</span>
+                  <span style="font:600 10px 'Spectral',serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(var(--parchRgb),.5)">{{ o.deckName }}</span>
+                  <span style="font:600 9px 'Spectral',serif;letter-spacing:.1em;color:var(--rose)">{{ o.tag }}</span>
+                  <span style="flex:1"></span>
+                  <span style="color:var(--gold);font-size:13px">{{ o.check }}</span>
+                </div>
+                <div style="font-family:'Cinzel',serif;font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--parch);margin-top:3px">{{ o.name }}</div>
+                <div style="font:13px/1.4 'Spectral',serif;color:rgba(var(--parchRgb),.6);margin-top:2px;text-wrap:pretty">{{ o.text }}</div>
+              </button>
+            </sc-for>
+          </div>
+          <button sc-camel-on-click="{{ editorBack }}" style="background:transparent;border:1px solid rgba(var(--parchRgb),.3);border-radius:999px;padding:11px;font:600 14px 'Spectral',serif;color:rgba(var(--parchRgb),.65);cursor:pointer" style-hover="border-color:rgba(var(--parchRgb),.6)">↩ {{ backLabel }}</button>
+        </sc-if>
+      </div>
     </div>
   </sc-if>
 
@@ -740,6 +799,9 @@ class Component extends DCLogic {
       promptOpen: false,
       promptIdx: 0,
       customPrompts: this.loadCustom(),
+      mix: this.loadMix(),
+      editorMode: null,
+      editorRank: null,
       draft: '',
       houseRules: [],
       rulesOpen: false,
@@ -750,6 +812,25 @@ class Component extends DCLogic {
       timerLeft: 0
     };
     this.ac = null; this.master = null; this.musicTimer = null; this.noteIdx = 0; this.drones = []; this.timer = null;
+  }
+  // deck mixes: { hostMode: { rank: sourceMode } } — a slot borrowed from another deck
+  loadMix() {
+    try { return JSON.parse(localStorage.getItem('kingscup.mix') || '{}'); } catch (e) { return {}; }
+  }
+  saveMix(obj) {
+    try { localStorage.setItem('kingscup.mix', JSON.stringify(obj)); } catch (e) {}
+  }
+  srcFor(modeKey, r) {
+    const m = this.state.mix[modeKey];
+    const src = m && m[r];
+    return (src && this.data().modes[src]) ? src : modeKey;
+  }
+  ruleAt(modeKey, r) {
+    return this.data().modes[this.srcFor(modeKey, r)].rules[r];
+  }
+  // Waterfall needs a circle and Mate needs a third person, so they stay out of a two-player deck.
+  needsThree(srcKey, r) {
+    return !this.data().modes[srcKey].couple && (r === 1 || r === 8);
   }
   loadCustom() {
     try { return JSON.parse(localStorage.getItem('kingscup.customPrompts') || '{}'); } catch (e) { return {}; }
@@ -1055,7 +1136,7 @@ class Component extends DCLogic {
   renderVals() {
     const { lang, screen, mode, spice, musicOn, sfxOn, names, players, turn, deck, drawn, angle, mates, pendingMate,
       questionMaster, kings, drinks, promptOpen, promptIdx, customPrompts, draft, houseRules, rulesOpen, ruleDraft,
-      promise, passes, cardsPlayed, timerLeft } = this.state;
+      promise, passes, cardsPlayed, timerLeft, mix, editorMode, editorRank } = this.state;
     const D = this.data();
     const M = D.modes[mode] || D.modes.friends;
     const R = M.rules;
@@ -1064,7 +1145,10 @@ class Component extends DCLogic {
     const showSub = this.props.showBothLanguages ?? true;
     const flipped = (angle / 180) % 2 === 1;
     const deckSize = M.suits * 13;
-    const rule = drawn ? R[drawn.r] : null;
+    // a slot may be borrowed from another deck; the card, its mechanics and its prompts all come from there
+    const drawnSrc = drawn ? this.srcFor(mode, drawn.r) : mode;
+    const SM = D.modes[drawnSrc];
+    const rule = drawn ? this.ruleAt(mode, drawn.r) : null;
     const kind = rule ? (rule.kind || '') : '';
     // players are keyed by name, so duplicates get a numeric suffix: "Ali", "Ali 2"
     const validNames = [];
@@ -1110,12 +1194,12 @@ class Component extends DCLogic {
       onPick: () => this.setState(s => ({ mates: { ...s.mates, [cur]: [...(s.mates[cur] || []), p] }, pendingMate: false }))
     }));
     const matePairs = Object.entries(mates).filter(([, list]) => list.length);
-    const promptSet = drawn ? M.prompts[drawn.r] : null;
+    const promptSet = drawn ? SM.prompts[drawn.r] : null;
     const hasPrompts = !!promptSet;
     // passionfruit prompt lists are tiered by spice level; take every level up to the chosen one
     const rawList = promptSet ? (tr ? promptSet.tr : promptSet.en) : [];
     const basePrompts = rawList.length && Array.isArray(rawList[0]) ? rawList.slice(0, spice).reduce((a, b) => a.concat(b), []) : rawList;
-    const customKey = drawn ? `${mode}-${drawn.r}-${lang}` : '';
+    const customKey = drawn ? `${drawnSrc}-${drawn.r}-${lang}` : '';
     const mine = (customPrompts[customKey] || []);
     const promptList = [...basePrompts, ...mine];
     const tally = players.map(p => ({
@@ -1183,6 +1267,7 @@ class Component extends DCLogic {
       showDeckChip: screen !== 'modes',
       modeCards: Object.keys(D.modes).map(key => {
         const m = D.modes[key];
+        const edits = Object.keys(mix[key] || {}).length;
         return {
           key,
           name: m.label[lang],
@@ -1190,6 +1275,10 @@ class Component extends DCLogic {
           players: m.players[lang],
           glyph: m.glyph,
           cls: 'mode-' + key,
+          edited: edits > 0,
+          editedLine: t(`${edits} kart değiştirildi`, `${edits} cards swapped`),
+          adjustLabel: t('Düzenle', 'Adjust'),
+          onAdjust: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ editorMode: key, editorRank: null }); },
           onPick: () => this.setState({
             ...freshGame(),
             mode: key,
@@ -1199,6 +1288,68 @@ class Component extends DCLogic {
           })
         };
       }),
+      // ── deck editor: 13 slots, each may be filled from any deck ──
+      editorOpen: !!editorMode,
+      editorListView: !!editorMode && editorRank === null,
+      editorRankView: !!editorMode && editorRank !== null,
+      editorTitle: editorMode ? t('Desteyi Düzenle', 'Edit the Deck') : '',
+      editorSub: editorMode ? D.modes[editorMode].label[lang] : '',
+      editorRows: (editorMode ? Array.from({ length: 13 }, (_, i) => i + 1) : []).map(r => {
+        const src = this.srcFor(editorMode, r);
+        const sm = D.modes[src];
+        const rl = sm.rules[r];
+        return {
+          numeral: tr ? D.roman[r] : D.romanEn[r],
+          name: (tr ? rl.tr : rl.en)[0],
+          glyph: sm.glyph,
+          deckName: sm.label[lang],
+          mixed: src !== editorMode,
+          nameColor: src !== editorMode ? 'var(--gold)' : 'var(--parch)',
+          onOpen: () => this.setState({ editorRank: r })
+        };
+      }),
+      editorRankTitle: editorMode && editorRank ? `${tr ? D.roman[editorRank] : D.romanEn[editorRank]}` : '',
+      editorOptions: (editorMode && editorRank ? Object.keys(D.modes) : [])
+        .filter(key => !(D.modes[editorMode].couple && this.needsThree(key, editorRank)))
+        .map(key => {
+          const sm = D.modes[key];
+          const rl = sm.rules[editorRank];
+          const loc = tr ? rl.tr : rl.en;
+          const chosen = this.srcFor(editorMode, editorRank) === key;
+          return {
+            glyph: sm.glyph,
+            deckName: sm.label[lang],
+            name: loc[0],
+            text: loc[1],
+            tag: sm.couple ? t('2 kişilik', 'for two') : (this.needsThree(key, editorRank) ? t('3+ kişi', '3+ players') : ''),
+            check: chosen ? '✓' : '',
+            border: chosen ? 'var(--gold)' : 'rgba(var(--goldRgb),.3)',
+            onPick: () => this.setState(s => {
+              const host = { ...(s.mix[editorMode] || {}) };
+              if (key === editorMode) delete host[editorRank]; else host[editorRank] = key;
+              const next = { ...s.mix, [editorMode]: host };
+              this.saveMix(next);
+              return { mix: next, editorRank: null };
+            })
+          };
+        }),
+      editorBack: () => this.setState({ editorRank: null }),
+      closeEditor: () => this.setState({ editorMode: null, editorRank: null }),
+      backLabel: t('Geri', 'Back'),
+      resetDeckLabel: t('Desteyi sıfırla', 'Reset deck'),
+      resetDeck: () => this.setState(s => {
+        const next = { ...s.mix };
+        delete next[editorMode];
+        this.saveMix(next);
+        return { mix: next, editorRank: null };
+      }),
+      // in-game swap: opens the editor straight at the card on the table
+      showSwap: !!drawn && flipped && !pendingMate,
+      swapLabel: t('Kartı değiştir', 'Swap card'),
+      swapCard: () => this.setState({ editorMode: mode, editorRank: drawn.r }),
+      // where a card came from, when it is not this deck's own
+      showCardSource: !!drawn && drawnSrc !== mode,
+      cardSource: drawn ? `${SM.glyph} ${SM.label[lang]}` : '',
       modesTitle: t('Bir deste seç', 'Choose a deck'),
       modesSub: t('Her destenin kendi kuralları var', 'Every deck has its own rules'),
       backToModes: () => { this.stopMusic(); this.stopTimer(); this.setState({ screen: 'modes', timerLeft: 0 }); },
@@ -1294,7 +1445,7 @@ class Component extends DCLogic {
             if (alt >= 0) { const tmp = nd[nd.length - 1]; nd[nd.length - 1] = nd[alt]; nd[alt] = tmp; }
           }
           const card = nd.pop();
-          const k = (R[card.r] && R[card.r].kind) || '';
+          const k = (this.ruleAt(mode, card.r) || {}).kind || '';
           const upd = { drawn: card, deck: nd, angle: angle + 180, timerLeft: 0, cardsPlayed: cardsPlayed + 1, pendingMate: k === 'mate' && mateOptions.length > 0 };
           if (k === 'qm') upd.questionMaster = players[turn] || '';
           if (k === 'king') upd.kings = kings + 1;
