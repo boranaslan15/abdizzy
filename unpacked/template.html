@@ -790,6 +790,7 @@ class Component extends DCLogic {
       turn: 0,
       deck: this.makeDeck(),
       drawn: null,
+      drawFx: null,
       angle: 0,
       mates: {},
       pendingMate: false,
@@ -798,6 +799,8 @@ class Component extends DCLogic {
       drinks: {},
       promptOpen: false,
       promptIdx: 0,
+      promptQueue: [],
+      usedPrompts: this.loadUsed(),
       customPrompts: this.loadCustom(),
       mix: this.loadMix(),
       editorMode: null,
@@ -820,13 +823,33 @@ class Component extends DCLogic {
   saveMix(obj) {
     try { localStorage.setItem('kingscup.mix', JSON.stringify(obj)); } catch (e) {}
   }
-  srcFor(modeKey, r) {
-    const m = this.state.mix[modeKey];
+  srcFor(modeKey, r, mix = this.state.mix) {
+    const m = mix[modeKey];
     const src = m && m[r];
     return (src && this.data().modes[src]) ? src : modeKey;
   }
-  ruleAt(modeKey, r) {
-    return this.data().modes[this.srcFor(modeKey, r)].rules[r];
+  ruleAt(modeKey, r, mix = this.state.mix) {
+    return this.data().modes[this.srcFor(modeKey, r, mix)].rules[r];
+  }
+  // When the face-up card's slot is swapped mid-game, undo what the old card did
+  // (Question Master, King count, mate picks) and apply the new card's effect instead.
+  redoDraw(s, mix) {
+    const flipped = (s.angle / 180) % 2 === 1;
+    if (s.screen !== 'game' || !s.drawn || !s.drawFx || !flipped) return {};
+    const r = s.drawn.r;
+    if (this.srcFor(s.mode, r, mix) === this.srcFor(s.mode, r, s.mix)) return {};
+    const k = (this.ruleAt(s.mode, r, mix) || {}).kind || '';
+    const fx = s.drawFx, cur = s.players[s.turn] || '';
+    const myMates = fx.mates[cur] || [];
+    this.stopTimer();
+    return {
+      questionMaster: k === 'qm' ? cur : fx.qm,
+      kings: k === 'king' ? fx.kings + 1 : fx.kings,
+      mates: fx.mates,
+      pendingMate: k === 'mate' && s.players.some(p => p !== cur && !myMates.includes(p)),
+      timerLeft: 0,
+      ruleDraft: ''
+    };
   }
   // Waterfall needs a circle and Mate needs a third person, so they stay out of a two-player deck.
   needsThree(srcKey, r) {
@@ -838,11 +861,108 @@ class Component extends DCLogic {
   saveCustom(obj) {
     try { localStorage.setItem('kingscup.customPrompts', JSON.stringify(obj)); } catch (e) {}
   }
+  // prompts already shown, per list, kept across nights so the next game opens with unseen ones
+  loadUsed() {
+    try { return JSON.parse(localStorage.getItem('kingscup.usedPrompts') || '{}'); } catch (e) { return {}; }
+  }
+  saveUsed(obj) {
+    try { localStorage.setItem('kingscup.usedPrompts', JSON.stringify(obj)); } catch (e) {}
+  }
+  markPrompt(key, text) {
+    if (!key || !text) return;
+    this.setState(s => {
+      const list = s.usedPrompts[key] || [];
+      if (list.includes(text)) return null;
+      const next = { ...s.usedPrompts, [key]: [...list, text] };
+      this.saveUsed(next);
+      return { usedPrompts: next };
+    });
+  }
   makeDeck(suits) {
     const d = [];
     for (let s = 0; s < (suits || 4); s++) for (let r = 1; r <= 13; r++) d.push({ r, s });
+    return this.shuffled(d);
+  }
+  shuffled(list) {
+    const d = [...list];
     for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; }
     return d;
+  }
+  // Plans the whole draw order for the table up front, so nothing breaks late in the night.
+  // Ananas (the deck for two) keeps a plain shuffle. Every other deck guarantees:
+  //  · a rank never returns until at least 4 other cards have passed (Kings included)
+  //  · a house-rule card and a Question Master card each show up in the first 10 cards, and neither in the last 10
+  //  · two "everyone drinks" (group) cards never come back to back
+  //  · 4+ players: nobody gets the same rank more than twice, and everyone gets at least one
+  //    active card (You Choose, Truth or Dare, Make a Rule, Question Master)
+  // Every card — a pass too — moves the turn on, so draw position p belongs to player (firstTurn + p) % n.
+  buildDeck(modeKey, n, firstTurn) {
+    const M = this.data().modes[modeKey] || this.data().modes.friends;
+    if (M.couple) return this.makeDeck(M.suits);
+    const info = [null];
+    for (let r = 1; r <= 13; r++) {
+      const rl = this.ruleAt(modeKey, r) || {}, kind = rl.kind || '';
+      info.push({ kind, group: !!rl.group, active: r === 2 || r === 3 || kind === 'rule' || kind === 'qm' });
+    }
+    // the last attempts drop the two softer rules (group spacing, active card each) rather than give up
+    for (let attempt = 0; attempt < 400; attempt++) {
+      const seq = this.planDeck(M.suits, Math.max(1, n || 1), firstTurn || 0, info, attempt < 300);
+      if (seq) return seq.reverse(); // cards are drawn from the end with pop()
+    }
+    return this.makeDeck(M.suits);
+  }
+  planDeck(suits, n, first, info, strict) {
+    const N = suits * 13, EARLY = 10, LATE = N - 10, GAP = 5;
+    const special = r => info[r].kind === 'rule' || info[r].kind === 'qm';
+    const needKinds = ['rule', 'qm'].filter(k => info.some(x => x && x.kind === k));
+    const placedKind = {};
+    const left = [0], pool = [null], lastPos = Array(14).fill(-99);
+    for (let r = 1; r <= 13; r++) { left.push(suits); pool.push(this.shuffled(Array.from({ length: suits }, (_, s) => s))); }
+    const per = Array.from({ length: n }, () => Array(14).fill(0));
+    const hasActive = Array(n).fill(false);
+    const owner = p => (first + p) % n;
+    const slotsLeft = (pl, p) => { let c = 0; for (let q = p; q < N; q++) if (owner(q) === pl) c++; return c; };
+    let remSpecial = 0;
+    for (let r = 1; r <= 13; r++) if (special(r)) remSpecial += suits;
+    const seq = [];
+    let prevGroup = false;
+    for (let p = 0; p < N; p++) {
+      const pl = owner(p);
+      let c = [];
+      for (let r = 1; r <= 13; r++) {
+        if (!left[r] || p - lastPos[r] < GAP) continue;
+        if (p >= LATE && special(r)) continue;
+        if (n >= 4 && per[pl][r] >= 2) continue;
+        if (strict && prevGroup && info[r].group) continue;
+        c.push(r);
+      }
+      // the early deadline: every missing rule / QM card must still fit before card 10
+      const missing = needKinds.filter(k => !placedKind[k]);
+      if (missing.length && p < EARLY && EARLY - p <= missing.length) c = c.filter(r => missing.includes(info[r].kind));
+      // the late cutoff: rule / QM cards still in hand must all fit before the last 10
+      if (p < LATE && remSpecial > LATE - p) return null;
+      if (p < LATE && remSpecial === LATE - p) c = c.filter(special);
+      // a player still without an active card gets one on their last chances
+      if (strict && n >= 4 && !hasActive[pl] && slotsLeft(pl, p) <= 2) {
+        const a = c.filter(r => info[r].active);
+        if (a.length) c = a;
+      }
+      if (!c.length) return null;
+      // favour ranks with more copies left, so the end of the deck doesn't jam with one rank
+      let total = 0;
+      const w = c.map(r => { const x = left[r] * left[r]; total += x; return x; });
+      let pick = Math.random() * total, i = 0;
+      while (pick >= w[i]) pick -= w[i++];
+      const r = c[Math.min(i, c.length - 1)];
+      seq.push({ r, s: pool[r].pop() });
+      left[r]--; lastPos[r] = p; per[pl][r]++;
+      if (info[r].active) hasActive[pl] = true;
+      if (info[r].kind) placedKind[info[r].kind] = true;
+      if (special(r)) remSpecial--;
+      prevGroup = info[r].group;
+    }
+    if (strict && n >= 4 && hasActive.some(h => !h)) return null;
+    return seq;
   }
   // ---- audio ----
   ensureAudio() {
@@ -962,6 +1082,7 @@ class Component extends DCLogic {
       // Each mode is a full deck: 13 rules, its own prompts and its own palette class.
       // kind: hot = highlighted card, mate = pick a partner, qm = question master,
       // king = fourth-king cup, rule = adds to the house rules, promise = writes the closing vow.
+      // group: true = a whole group drinks at once; two of them never come back to back.
       modes: {
         friends: {
           label: { tr: 'Arkadaşlar', en: 'Friends' },
@@ -981,12 +1102,12 @@ class Component extends DCLogic {
             }
           },
           rules: [null,
-            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone drinks; you may not stop before the player on your left.'] },
+            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone drinks; you may not stop before the player on your left.'], group: true },
             { tr: ['Sen Seç', 'Masadan birini seç — o içer.'], en: ['You Choose', 'Choose someone at the table — they drink.'] },
             { tr: ['Doğruluk mu Cesaretlilik mi', 'Doğruluk mu, cesaretlilik mi? Seç — yapmayan içer.'], en: ['Truth or Dare', 'Truth or dare? Choose one — refuse and you drink.'], sec: 60 },
             { tr: ['Daha Önce Hiç', '"Daha önce hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never Have I Ever', 'Say "never have I ever..." — everyone who has, drinks.'] },
-            { tr: ['Beyler', 'Bütün erkekler içer.'], en: ['Guys', 'All the guys drink.'] },
-            { tr: ['Hanımlar', 'Bütün kadınlar içer.'], en: ['Chicks', 'All the ladies drink.'] },
+            { tr: ['Beyler', 'Bütün erkekler içer.'], en: ['Guys', 'All the guys drink.'], group: true },
+            { tr: ['Hanımlar', 'Bütün kadınlar içer.'], en: ['Chicks', 'All the ladies drink.'], group: true },
             { tr: ['Göğe El', 'Elini göğe kaldır — en son kaldıran içer.'], en: ['Heaven', 'Point to the sky — last hand up drinks.'], kind: 'hot' },
             { tr: ['Yoldaş', 'Kendine bir yoldaş seç; sen içtikçe o da içer.'], en: ['Mate', 'Pick a mate; whenever you drink, they drink.'], kind: 'mate' },
             { tr: ['Cümle Başlat', 'Bir cümle başlat; sırayla birer kelime ekleyin. Cümleyi bozan içer.'], en: ['Start a Sentence', 'Start a sentence; each player adds a word. Whoever breaks it drinks.'] },
@@ -1014,19 +1135,26 @@ class Component extends DCLogic {
             }
           },
           rules: [null,
-            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone starts; you cannot stop before the person on your left.'] },
-            { tr: ['Görevlendir', 'Masadan birini seç — o içer.'], en: ['Nominate', 'Pick someone — they drink.'] },
+            { tr: ['Şelale', 'Herkes içmeye başlar; solundaki durmadan sen de duramazsın.'], en: ['Waterfall', 'Everyone starts; you cannot stop before the person on your left.'], group: true },
+            { tr: ['İş Listesi Kitle', 'Masadan birini seç — o içer.'], en: ['Dump the To-Do List', 'Pick someone — they drink.'] },
             { tr: ['Doğruluk mu Görev mi', 'Hafif bir doğruluk ya da küçük bir görev seç — yapmayan içer.'], en: ['Truth or Task', 'A mild truth, or a small task — refuse and you drink.'], sec: 60 },
             { tr: ['İşte Hiç', '"İşte hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never at Work', 'Say "never at work have I..." — everyone who has, drinks.'] },
-            { tr: ['Kıdemliler', 'İki yıldan uzun süredir burada olan herkes içer.'], en: ['Veterans', 'Everyone here more than two years drinks.'] },
-            { tr: ['Yeniler', 'Son iki yılda aramıza katılan herkes içer.'], en: ['Newcomers', 'Everyone who joined in these two years drinks.'] },
+            { tr: ['Kıdemliler', 'İki yıldan uzun süredir burada olan herkes içer.'], en: ['Veterans', 'Everyone here more than two years drinks.'], group: true },
+            { tr: ['Yeniler', 'Son iki yılda aramıza katılan herkes içer.'], en: ['Newcomers', 'Everyone who joined in these two years drinks.'], group: true },
             { tr: ['Göğe El', 'Elini göğe kaldır — en son kaldıran içer.'], en: ['Heaven', 'Hand up last, you drink.'], kind: 'hot' },
-            { tr: ['Mesai Dostu', 'Kendine bir mesai dostu seç; sen içtikçe o da içer.'], en: ['Work Buddy', 'Pick a buddy; you drink, they drink.'], kind: 'mate' },
+            { tr: ['Buddy', 'Kendine bir buddy seç; sen içtikçe o da içer.'], en: ['Buddy', 'Pick a buddy; you drink, they drink.'], kind: 'mate' },
             { tr: ['Jargon Zinciri', 'Zinciri tekrarla ve bir iş jargonu ekle. Takılan içer.'], en: ['Buzzword Chain', 'Repeat the chain, add a corporate buzzword. Blank out, drink.'] },
-            { tr: ['Kategori', 'Bir kategori seç — takımlar, isimler, SQL tabloları. Takılan içer.'], en: ['Categories', 'Name teams, people, SQL tables. First to fail drinks.'] },
+            { tr: ['CANCELLED: Haftalık Toplantı', 'Toplantı iptal! Kimse bu raunt içmesin.'], en: ['CANCELLED: Weekly Meeting', 'Meeting cancelled! Nobody drinks this round.'] },
             { tr: ['Ofis Kuralı', 'Yeni bir kural koy ("bir önceki e-postamda dediğim gibi" demeden konuşmak yok). Bozan içer.'], en: ['Office Rule', 'Invent a rule ("say per my last email before speaking"). Whoever breaks it drinks.'], kind: 'rule' },
             { tr: ['Soru Ustası', 'Soru Ustası {name}! Sorularına "patron" demeden cevap veren içer.'], en: ['Question Master', 'Question Master is {name}! Answer their questions without saying "boss" and you drink.'], kind: 'qm' },
-            { tr: ['Patronun Kupası', 'Masadaki en yetkili kişi içer.'], en: ["The Boss's Mug", 'The person with the most authority drinks.'] }
+            // one King per suit, each with its own rule (Swords, Cups, Pentacles, Wands); tr/en is the editor summary
+            { tr: ['Dört Papaz', 'Ofise en yakın oturan · en uzaktan gelen · en yetkili · en genç içer.'], en: ['Four Kings', 'Closest to the office · farthest commute · most senior · youngest drinks.'],
+              suits: [
+                { tr: ['Ofise En Yakın', 'Ofise en yakın oturan içer.'], en: ['Closest to the Office', 'Whoever lives closest to the office drinks.'] },
+                { tr: ['En Uzaktan Gelen', 'En uzaktan gelen içer.'], en: ['Longest Commute', 'Whoever comes from the farthest drinks.'] },
+                { tr: ['Patronun Kupası', 'Masadaki en yetkili kişi içer.'], en: ["The Boss's Mug", 'The person with the most authority drinks.'] },
+                { tr: ['En Genç', 'Masadaki en genç kişi içer.'], en: ['Youngest', 'The youngest person at the table drinks.'] }
+              ] }
           ]
         },
         passionfruit: {
@@ -1063,12 +1191,12 @@ class Component extends DCLogic {
             }
           },
           rules: [null,
-            { tr: ['Yavaş Şelale', 'Solundakiyle göz göze şelale; o durmadan sen de duramazsın.'], en: ['Slow Waterfall', 'Waterfall, but hold eye contact with the player on your left.'] },
+            { tr: ['Yavaş Şelale', 'Solundakiyle göz göze şelale; o durmadan sen de duramazsın.'], en: ['Slow Waterfall', 'Waterfall, but hold eye contact with the player on your left.'], group: true },
             { tr: ['Baştan Çıkarma', 'Birini seç: ya içer ya da senin sorunu cevaplar.'], en: ['Temptation', 'Pick someone: they drink, or they answer your question.'] },
             { tr: ['Ateşli Doğruluk mu Cesaret mi', 'Doğruluk mu, cesaret mi? Yapmayan içer.'], en: ['Spicy Truth or Dare', 'Truth or dare? Refuse and you drink.'], sec: 60 },
             { tr: ['Daha Önce Hiç', '"Daha önce hiç..." diye bir cümle kur. Yapanlar içer.'], en: ['Never Have I Ever', 'Say "never have I ever..." — everyone who has, drinks.'] },
-            { tr: ['Sahipli', 'İlişkisi olan herkes içer.'], en: ['Taken', 'Everyone in a relationship drinks.'] },
-            { tr: ['Özgür', 'Bekar olan herkes içer.'], en: ['Free', 'Everyone single drinks.'] },
+            { tr: ['Sahipli', 'İlişkisi olan herkes içer.'], en: ['Taken', 'Everyone in a relationship drinks.'], group: true },
+            { tr: ['Özgür', 'Bekar olan herkes içer.'], en: ['Free', 'Everyone single drinks.'], group: true },
             { tr: ['Son Dokunuş', 'Elini masaya en son koyan içer.'], en: ['Last Touch', 'Last to put a hand on the table drinks.'], kind: 'hot' },
             { tr: ['Suç Ortağı', 'Kendine bir suç ortağı seç; sen içtikçe o da içer.'], en: ['Partner in Crime', 'Pick a partner; whenever you drink, they drink.'], kind: 'mate' },
             { tr: ['İtiraf Zinciri', 'Bir itiraf cümlesi başlat; sırayla birer kelime ekleyin. Bozan içer.'], en: ['Confession Chain', 'Start a confession; each player adds a word. Whoever breaks it drinks.'] },
@@ -1135,7 +1263,7 @@ class Component extends DCLogic {
   stopTimer() { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
   renderVals() {
     const { lang, screen, mode, spice, musicOn, sfxOn, names, players, turn, deck, drawn, angle, mates, pendingMate,
-      questionMaster, kings, drinks, promptOpen, promptIdx, customPrompts, draft, houseRules, rulesOpen, ruleDraft,
+      questionMaster, kings, drinks, promptOpen, promptIdx, promptQueue, usedPrompts, customPrompts, draft, houseRules, rulesOpen, ruleDraft,
       promise, passes, cardsPlayed, timerLeft, mix, editorMode, editorRank } = this.state;
     const D = this.data();
     const M = D.modes[mode] || D.modes.friends;
@@ -1145,6 +1273,8 @@ class Component extends DCLogic {
     const showSub = this.props.showBothLanguages ?? true;
     const flipped = (angle / 180) % 2 === 1;
     const deckSize = M.suits * 13;
+    // one King per suit: a two-suit deck holds only two, so the cup fills on the second
+    const kingTotal = M.suits;
     // a slot may be borrowed from another deck; the card, its mechanics and its prompts all come from there
     const drawnSrc = drawn ? this.srcFor(mode, drawn.r) : mode;
     const SM = D.modes[drawnSrc];
@@ -1170,16 +1300,19 @@ class Component extends DCLogic {
     let cardKicker = '', cardRuleName = '', cardRuleSub = '';
     let bannerText = t('Kartı çevirmek için desteye dokun.', 'Tap the deck to turn a card.');
     if (drawn) {
-      const s = D.suits[drawn.s], loc = tr ? rule.tr : rule.en, alt = tr ? rule.en : rule.tr;
+      // a rule with per-suit faces shows the face for the drawn suit; kind and timer stay on the rule
+      const face = (rule.suits && rule.suits[drawn.s]) || rule;
+      const s = D.suits[drawn.s], loc = tr ? face.tr : face.en, alt = tr ? face.en : face.tr;
       cardKicker = tr ? `${D.roman[drawn.r]} · ${s.tr.toLocaleUpperCase('tr')}` : `${D.romanEn[drawn.r]} · ${s.en.toLocaleUpperCase('en')}`;
       cardRuleName = loc[0];
       cardRuleSub = showSub ? alt[0] : '';
       bannerText = loc[1];
       if (kind === 'qm') bannerText = bannerText.split('{name}').join(questionMaster || players[turn] || '');
       if (kind === 'king') {
-        bannerText = kings >= 4
-          ? t(`Dördüncü Papaz! ${players[turn] || ''} kadehi sonuna kadar içer!`, `The fourth King! ${players[turn] || ''} drains the cup!`)
-          : t(`Kadehe biraz doldur. Papaz ${kings}/4 — dördüncüyü çeken hepsini içer!`, `Pour into the cup. King ${kings}/4 — whoever draws the fourth drinks it all!`);
+        const four = kingTotal === 4;
+        bannerText = kings >= kingTotal
+          ? t(`${four ? 'Dördüncü' : 'Son'} Papaz! ${players[turn] || ''} kadehi sonuna kadar içer!`, `The ${four ? 'fourth' : 'last'} King! ${players[turn] || ''} drains the cup!`)
+          : t(`Kadehe biraz doldur. Papaz ${kings}/${kingTotal} — ${four ? 'dördüncüyü' : 'sonuncuyu'} çeken hepsini içer!`, `Pour into the cup. King ${kings}/${kingTotal} — whoever draws the ${four ? 'fourth' : 'last'} drinks it all!`);
       }
     }
     if (pendingMate) bannerText = t('Yoldaşını seç — sen içtikçe o da içecek:', 'Choose your mate — they drink when you drink:');
@@ -1201,7 +1334,17 @@ class Component extends DCLogic {
     const basePrompts = rawList.length && Array.isArray(rawList[0]) ? rawList.slice(0, spice).reduce((a, b) => a.concat(b), []) : rawList;
     const customKey = drawn ? `${drawnSrc}-${drawn.r}-${lang}` : '';
     const mine = (customPrompts[customKey] || []);
-    const promptList = [...basePrompts, ...mine];
+    // The queue holds tokens, not texts: 'b3' is base prompt 3 (the same question in either language),
+    // 'c:<text>' is one of your own. Shown order: the queue built when the prompts opened (unseen first),
+    // skipping anything since removed, then whatever was never queued (your own prompts in the other language).
+    const items = [...basePrompts.map((text, i) => ({ tok: 'b' + i, text })), ...mine.map(text => ({ tok: 'c:' + text, text }))];
+    const byTok = new Map(items.map(it => [it.tok, it]));
+    const shownItems = [], inShown = new Set();
+    const take = it => { if (it && !inShown.has(it.tok)) { inShown.add(it.tok); shownItems.push(it); } };
+    promptQueue.forEach(tk => take(byTok.get(tk)));
+    items.forEach(take);
+    const shown = shownItems.map(it => it.text);
+    const curIdx = shown.length ? promptIdx % shown.length : 0;
     const tally = players.map(p => ({
       name: p,
       count: drinks[p] || 0,
@@ -1240,8 +1383,42 @@ class Component extends DCLogic {
       this.setState(s => {
         const next = { ...s.customPrompts, [customKey]: [...(s.customPrompts[customKey] || []), text] };
         this.saveCustom(next);
-        return { customPrompts: next, draft: '', promptIdx: promptList.length };
+        // the new prompt is shown right away, slotted in just after the one on screen (a repeat shows where it already is)
+        const tok = 'c:' + text, at = shownItems.findIndex(it => it.tok === tok);
+        const queue = shownItems.map(it => it.tok);
+        if (at >= 0) return { customPrompts: next, draft: '', promptQueue: queue, promptIdx: at };
+        const idx = queue.length ? curIdx + 1 : 0;
+        queue.splice(idx, 0, tok);
+        return { customPrompts: next, draft: '', promptQueue: queue, promptIdx: idx };
       });
+      this.markPrompt(customKey, text);
+    };
+    // removing one of your own keeps the prompt on screen in place; removing the one on screen
+    // steps back to the prompt before it — the one you were reading before you added it
+    const removePrompt = (text, i) => {
+      const tok = 'c:' + text, at = shownItems.findIndex(it => it.tok === tok);
+      const rest = shownItems.filter(it => it.tok !== tok);
+      let ni = curIdx;
+      if (at >= 0 && at < curIdx) ni = curIdx - 1;
+      else if (at === curIdx) ni = Math.max(0, Math.min(curIdx - 1, rest.length - 1));
+      this.setState(s => {
+        const list = (s.customPrompts[customKey] || []).filter((_, j) => j !== i);
+        const next = { ...s.customPrompts, [customKey]: list };
+        this.saveCustom(next);
+        return { customPrompts: next, promptQueue: rest.map(it => it.tok), promptIdx: ni };
+      });
+      if (at === curIdx && rest[ni]) this.markPrompt(customKey, rest[ni].text);
+    };
+    // with the prompts open, a language switch keeps the same shuffled order, starting at the prompt on screen
+    const setLang = (l) => {
+      if (l === lang) return;
+      const upd = { lang: l };
+      if (promptOpen && shownItems.length) {
+        const rot = [...shownItems.slice(curIdx), ...shownItems.slice(0, curIdx)];
+        upd.promptQueue = rot.map(it => it.tok).filter(tk => tk[0] === 'b');
+        upd.promptIdx = 0;
+      }
+      this.setState(upd);
     };
     // the house-rules input doubles as the closing promise on the couple deck
     const writesPromise = kind === 'promise';
@@ -1257,8 +1434,9 @@ class Component extends DCLogic {
       if (!deck.length) { this.stopMusic(); this.setState({ ...extra, angle: angle + 180, timerLeft: 0, screen: 'stats' }); return; }
       this.setState({ ...extra, angle: angle + 180, timerLeft: 0, turn: (turn + 1) % players.length });
     };
-    const freshRound = () => ({ deck: this.makeDeck(M.suits), drawn: null, pendingMate: false, kings: 0, promptOpen: false, timerLeft: 0 });
-    const freshGame = () => ({ ...freshRound(), mates: {}, questionMaster: null, drinks: {}, houseRules: [], passes: {}, cardsPlayed: 0, promise: '', rulesOpen: false });
+    // the deck is planned for the players at the table, starting with whoever draws first
+    const freshRound = (n = players.length, first = 0) => ({ deck: this.buildDeck(mode, n, first), drawn: null, drawFx: null, pendingMate: false, kings: 0, promptOpen: false, promptQueue: [], timerLeft: 0 });
+    const freshGame = (n, first) => ({ ...freshRound(n, first), mates: {}, questionMaster: null, drinks: {}, houseRules: [], passes: {}, cardsPlayed: 0, promise: '', rulesOpen: false });
     return {
       isModes: screen === 'modes', isSetup: screen === 'setup', isGame: screen === 'game', isStats: screen === 'stats',
       themeClass: 'mode-' + mode,
@@ -1329,7 +1507,7 @@ class Component extends DCLogic {
               if (key === editorMode) delete host[editorRank]; else host[editorRank] = key;
               const next = { ...s.mix, [editorMode]: host };
               this.saveMix(next);
-              return { mix: next, editorRank: null };
+              return { ...this.redoDraw(s, next), mix: next, editorRank: null };
             })
           };
         }),
@@ -1341,7 +1519,7 @@ class Component extends DCLogic {
         const next = { ...s.mix };
         delete next[editorMode];
         this.saveMix(next);
-        return { mix: next, editorRank: null };
+        return { ...this.redoDraw(s, next), mix: next, editorRank: null };
       }),
       // in-game swap: opens the editor straight at the card on the table
       showSwap: !!drawn && flipped && !pendingMate,
@@ -1354,7 +1532,7 @@ class Component extends DCLogic {
       modesSub: t('Her destenin kendi kuralları var', 'Every deck has its own rules'),
       backToModes: () => { this.stopMusic(); this.stopTimer(); this.setState({ screen: 'modes', timerLeft: 0 }); },
       modesLabel: t('Desteler', 'Decks'),
-      setTr: () => this.setState({ lang: 'tr' }), setEn: () => this.setState({ lang: 'en' }),
+      setTr: () => setLang('tr'), setEn: () => setLang('en'),
       trBg: tr ? 'var(--gold)' : 'transparent', trFg: tr ? 'var(--ink)' : 'var(--gold)',
       enBg: !tr ? 'var(--gold)' : 'transparent', enFg: !tr ? 'var(--ink)' : 'var(--gold)',
       toggleMusic: () => {
@@ -1368,13 +1546,34 @@ class Component extends DCLogic {
       hasPrompts,
       phoneFg: hasPrompts ? 'var(--gold)' : 'rgba(var(--parchRgb),.28)',
       phoneTitle: hasPrompts ? t('Örnek sorular', 'Example prompts') : t('Bu kart için örnek yok', 'No prompts for this card'),
-      openPrompts: () => { if (hasPrompts) this.setState({ promptOpen: true, promptIdx: 0 }); },
+      // prompts open in a fresh shuffle with the unseen ones first; once all were seen, the list starts over
+      openPrompts: () => {
+        if (!hasPrompts) return;
+        const used = new Set(usedPrompts[customKey] || []);
+        const fresh = items.filter(it => !used.has(it.text));
+        const upd = { promptOpen: true, promptIdx: 0 };
+        let order;
+        if (fresh.length) {
+          order = [...this.shuffled(fresh), ...this.shuffled(items.filter(it => used.has(it.text)))];
+        } else {
+          order = this.shuffled(items);
+          upd.usedPrompts = { ...usedPrompts, [customKey]: [] };
+          this.saveUsed(upd.usedPrompts);
+        }
+        upd.promptQueue = order.map(it => it.tok);
+        this.setState(upd);
+        if (order[0]) this.markPrompt(customKey, order[0].text);
+      },
       closePrompts: () => this.setState({ promptOpen: false }),
       promptOpen: promptOpen && hasPrompts,
       promptTitle: promptSet ? promptSet.title[lang] : '',
-      promptText: promptList[promptIdx % Math.max(1, promptList.length)] || '',
-      promptPos: promptList.length ? `${(promptIdx % promptList.length) + 1} / ${promptList.length}` : '',
-      nextPrompt: () => this.setState({ promptIdx: promptIdx + 1 }),
+      promptText: shown[curIdx] || '',
+      promptPos: shown.length ? `${curIdx + 1} / ${shown.length}` : '',
+      nextPrompt: () => {
+        const i = promptIdx + 1;
+        this.setState({ promptIdx: i });
+        this.markPrompt(customKey, shown[i % Math.max(1, shown.length)]);
+      },
       anotherLabel: t('Başka ver', 'Another'),
       closeLabel: t('Kapat', 'Close'),
       draft,
@@ -1384,12 +1583,7 @@ class Component extends DCLogic {
       myPromptsLabel: t('KENDİ SORULARIN', 'YOUR PROMPTS'),
       myPrompts: mine.map((text, i) => ({
         text,
-        onRemove: () => this.setState(s => {
-          const list = (s.customPrompts[customKey] || []).filter((_, j) => j !== i);
-          const next = { ...s.customPrompts, [customKey]: list };
-          this.saveCustom(next);
-          return { customPrompts: next };
-        })
+        onRemove: () => removePrompt(text, i)
       })),
       hasMine: mine.length > 0,
       addPrompt,
@@ -1420,7 +1614,7 @@ class Component extends DCLogic {
       startLabel: t('Oyuna Başla', 'Begin the Game'),
       startGame: () => {
         if (validNames.length < 2) return;
-        this.setState({ ...freshGame(), screen: 'game', names: validNames, players: validNames, turn: 0, angle: 0 });
+        this.setState({ ...freshGame(validNames.length, 0), screen: 'game', names: validNames, players: validNames, turn: 0, angle: 0 });
         this.ensureAudio(); this.startMusic();
       },
       suitNameA: t('Kılıç', 'Swords'), suitNameB: t('Kupa', 'Cups'), suitNameC: t('Tılsım', 'Pentacles'), suitNameD: t('Asa', 'Wands'),
@@ -1428,7 +1622,7 @@ class Component extends DCLogic {
       anyMates: matePairs.length > 0,
       matesLine: matePairs.map(([a, list]) => `${a} → ${list.join(', ')}`).join(' · '),
       anyKings: kings > 0,
-      kingsLine: t(`Papaz: ${kings}/4`, `Kings drawn: ${kings}/4`),
+      kingsLine: t(`Papaz: ${kings}/${kingTotal}`, `Kings drawn: ${kings}/${kingTotal}`),
       anyQM: !!questionMaster,
       qmLine: t(`Soru Ustası: ${questionMaster || ''}`, `Question Master: ${questionMaster || ''}`),
       flipDeg: angle,
@@ -1446,7 +1640,10 @@ class Component extends DCLogic {
           }
           const card = nd.pop();
           const k = (this.ruleAt(mode, card.r) || {}).kind || '';
-          const upd = { drawn: card, deck: nd, angle: angle + 180, timerLeft: 0, cardsPlayed: cardsPlayed + 1, pendingMate: k === 'mate' && mateOptions.length > 0 };
+          // state before this card's effect, so swapping the card can undo it
+          const drawFx = { qm: questionMaster, kings, mates };
+          // promptQueue tokens belong to one card's list, so a new card starts without one
+          const upd = { drawn: card, drawFx, promptQueue: [], deck: nd, angle: angle + 180, timerLeft: 0, cardsPlayed: cardsPlayed + 1, pendingMate: k === 'mate' && mateOptions.length > 0 };
           if (k === 'qm') upd.questionMaster = players[turn] || '';
           if (k === 'king') upd.kings = kings + 1;
           this.setState(upd);
@@ -1464,7 +1661,12 @@ class Component extends DCLogic {
       // countdown for cards that need one (dares, eye contact)
       showTimer: !!drawn && flipped && !pendingMate && !!(rule && rule.sec),
       timerLabel: timerLeft > 0 ? `⏱ ${Math.floor(timerLeft / 60)}:${String(timerLeft % 60).padStart(2, '0')}` : `⏱ ${t('Süre', 'Timer')} ${rule && rule.sec ? rule.sec : 0}s`,
-      startTimer: () => { if (rule && rule.sec) { this.ensureAudio(); this.startTimer(timerLeft > 0 ? 0 : rule.sec); } },
+      // a second tap cancels the countdown quietly — the bell is only for a countdown that runs out
+      startTimer: () => {
+        if (!(rule && rule.sec)) return;
+        if (timerLeft > 0) { this.stopTimer(); this.setState({ timerLeft: 0 }); return; }
+        this.ensureAudio(); this.startTimer(rule.sec);
+      },
       showMatePicker: pendingMate,
       mateOptions,
       skipMate: () => this.setState({ pendingMate: false }),
@@ -1519,7 +1721,8 @@ class Component extends DCLogic {
       playersLabel: t('Oyuncular', 'Players'),
       shuffleLabel: t('Karıştır', 'Shuffle'),
       // flip the card back instead of snapping angle to 0 (which spun it through several turns)
-      shuffle: () => { this.stopTimer(); this.setState({ ...freshRound(), angle: flipped ? angle + 180 : angle, screen: 'game' }); },
+      // the current player has not drawn yet after a reshuffle, so the new plan starts with them
+      shuffle: () => { this.stopTimer(); this.setState({ ...freshRound(players.length, turn), angle: flipped ? angle + 180 : angle, screen: 'game' }); },
       backToSetup: () => { this.stopMusic(); this.stopTimer(); this.setState({ screen: 'setup' }); },
       showTally: !!drawn && !pendingMate,
       tally, tallyLabel: t('kim içti?', 'who drank?'),
@@ -1534,7 +1737,7 @@ class Component extends DCLogic {
       cardsPlayedLine: t(`${cardsPlayed} kart oynandı · ${totalPasses} pas`, `${cardsPlayed} cards played · ${totalPasses} passed`),
       promiseLabel: t('BİR SONRAKİ BULUŞMA', 'FOR THE NEXT DATE'),
       promiseText: promise || t('Söz verilmedi.', 'No promise was made.'),
-      playAgain: () => this.setState({ ...freshGame(), screen: 'game', angle: 0, turn: 0 }, () => this.startMusic()),
+      playAgain: () => this.setState({ ...freshGame(players.length, 0), screen: 'game', angle: 0, turn: 0 }, () => this.startMusic()),
       againLabel: t('Yeni Oyun', 'Play Again'),
       newPlayersLabel: t('Oyuncuları Değiştir', 'Change Players')
     };
